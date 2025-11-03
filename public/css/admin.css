@@ -1,17 +1,96 @@
-.main{
+:root {
+  /* --- Cores de Fundo (Escuro) --- */
+  --black: #000000;
+  --bg-primary: #121212;     /* Fundo principal: quase preto */
+  --bg-secondary: #1e1e1e;   /* Fundo de cards: cinza escuro */
+  --input-bg: #2a2a2a;       /* Fundo de inputs e áreas neutras */
+
+  /* --- Cores de Texto (Claro) --- */
+  --text-light: #f1f1f1;     /* Texto principal: quase branco */
+  --text-muted: #b0b0b0;     /* Texto secundário: cinza claro */
+
+  /* --- Cores de Destaque (Vibrante) --- */
+  --primary-color: #3399ff;  /* Azul vibrante para botões e links */
+  --primary-hover: #1a73e8;  /* Azul mais escuro no hover */
+
+  /* --- Cores de Bordas e Sombras --- */
+  --border-color: #2e2e2e;   /* Bordas sutis em tom escuro */
+  --shadow-color: rgba(0, 0, 0, 0.6); /* Sombras suaves e profundas */
+
+  /* --- Transições e Radius --- */
+  --transition-speed: 0.3s;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+
+main{
+    background-color: var(--bg-primary);
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px;
+    overflow-x: auto;
+}
+
+#usersContainer {
+    flex: 1;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: flex-start;
+    /* padding: 40px; */
+}
+
+.userCard {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    width: calc(100% - 10px);
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    /* background: rgb(255, 255, 255); */
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px;
+}
+
+.userCard p {
     width: 100%;
 }
 
-#usersContainer{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 50px;
+#id-user {
+    width: 20%;
 }
 
-.user-card{
+.userCard div {
     width: 100%;
     display: flex;
     flex-direction: row;
-    background-color: red;
+    align-items: center;
+    justify-content: end;
+    gap: 10px;
+}
+
+.userCard button {
+    background-color: var(--bg-secondary);
+    border: none;
+    color: var(--primary-color)
+}
+
+.extras {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    width: calc(100% - 10px);
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    /* background: rgb(255, 255, 255); */
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px;
 }

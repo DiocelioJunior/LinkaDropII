@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/aside.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <!--Link Icons-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+<script>
+  // Verifica se o usuário ainda está logado
+  fetch('/admin/users-json')
+    .then(res => {
+      if (res.status === 403) {
+        // Redireciona para login se não estiver logado
+        window.location.href = '/login.html';
+      }
+    })
+    .catch(() => window.location.href = '/login.html');
+</script>
+
+  </head>
+
+<body class="dark">
+  <aside>
+    <div>
+      <div class="logo">LOCO</div>
+      <nav>
+        <ul>
+          <li><a href="/admin/home" class="active"><span class="material-symbols-outlined">home</span></a></li>
+          <li><a href="/admin/users" class="active"><span class="material-symbols-outlined">group</span></a></li>
+          <li><a href="/register"><span class="material-symbols-outlined">person_add</span></a></li>
+          <li><a href="/logout"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+        </ul>
+      </nav>
+
+    </div>
+    <div class="profile">
+      <img src="/images/images.png" alt="Profile">
+      <span>Admin</span>
+    </div>
+  </aside>
+
+  <form id="editForm">
+    <label>Nome:</label>
+    <input type="text" name="name" required>
+
+    <label>Email:</label>
+    <input type="email" name="email" required>
+
+    <label>Nova Senha (opcional):</label>
+    <input type="password" name="password">
+
+    <button type="submit">Salvar</button>
+  </form>
+
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("id");
+
+    async function carregarUsuario() {
+      const res = await fetch("/admin/users/" + userId);
+      const user = await res.json();
+
+      document.querySelector('[name="name"]').value = user.name;
+      document.querySelector('[name="email"]').value = user.email;
+    }
+
+    document.getElementById("editForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      await fetch("/admin/users/" + userId, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      alert("Usuário atualizado com sucesso!");
+      window.location.href = "/admin.html";
+    });
+
+    carregarUsuario();
+  </script>
+
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login do Cliente - GWA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #111;
+      --accent: #181b1d;
+      --bg-glass: rgba(255, 255, 255, 0.75);
+      --text-dark: #222;
+      --text-muted: #666;
+      --radius: 16px;
+      --shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      background: url('/images/background-login.jpg') center/cover no-repeat; /* 🔹 troque por imagem da sua loja */
+    }
+
+    /* --- Área da esquerda --- */
+    .left {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      text-align: center;
+      background-image: url(https://i.pinimg.com/736x/16/08/18/160818fd9f0f3d4647a0fcb1c2a7fb8e.jpg);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .left h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .left p {
+      font-size: 1rem;
+      color: #ddd;
+      max-width: 400px;
+      margin: 0 auto;
+      line-height: 1.4;
+    }
+
+    /* --- Painel de login (direita) --- */
+    .login-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    .login-box {
+      background: var(--bg-glass);
+      padding: 40px 50px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .login-box h2 {
+      text-align: center;
+      color: var(--text-dark);
+      margin-bottom: 25px;
+    }
+
+    .login-box label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--text-dark);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 1rem;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .login-box button:hover {
+      background: #1a73e8;
+    }
+
+    .login-box small {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: var(--text-muted);
+    }
+
+    .login-box a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    @media (max-width: 900px) {
+      .left {
+        display: none;
+      }
+      .login-panel {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="left">
+    <div>
+      <h1>Bem-vindo!</h1>
+      <p>Descubra produtos exclusivos e promoções incríveis diretamente dos nossos droppers parceiros.</p>
+    </div>
+  </div>
+
+  <div class="login-panel">
+    <div class="login-box">
+      <h2>Login do Cliente</h2>
+<form id="loginForm" method="POST">
+  <input type="email" name="email" placeholder="Email" required>
+  <input type="password" name="password" placeholder="Senha" required>
+  <button type="submit">Entrar</button>
+</form>
+
+    </div>
+  </div>
+
+<script>
+  // Define automaticamente a rota conforme o droperId da URL
+  const droperId = window.location.pathname.split("/").pop();
+  document.getElementById("loginForm").action = `/clients/login/${droperId}`;
+</script>
+</body>
+</html>

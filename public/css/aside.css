@@ -1,14 +1,29 @@
+:root {
+  /* --- Cores de Fundo (Escuro) --- */
+  --black: #000000;
+  --bg-primary: #121212;     /* Fundo principal: quase preto, ideal para dark mode */
+  --bg-secondary: #1E1E1E;   /* Fundo de cards e seções: cinza escuro */
+  --input-bg: #2A2A2A;       /* Fundo de inputs e áreas de interação */
 
-  :root {
-    --black: #000000;
-    --bg-primary: #1A202C;
-    --bg-secondary: #24252A;
-    --input-bg: #333435;
-    --text-light: #ffffff;
-    --text-muted: #cccccc;
-    --primary-color: #6366F1;
-    --primary-hover: #4F46E5;
-  }
+  /* --- Cores de Texto (Claro) --- */
+  --text-light: #F1F1F1;     /* Texto principal: quase branco */
+  --text-muted: #B0B0B0;     /* Texto secundário/rótulos: cinza claro */
+
+  /* --- Cores de Destaque (Vibrante) --- */
+  --primary-color: #3399FF;  /* Azul vibrante principal */
+  --primary-hover: #1A73E8;  /* Azul mais escuro para hover/foco */
+
+  /* --- Cores de Bordas e Sombras --- */
+  --border-color: #2E2E2E;   /* Bordas sutis em tons escuros */
+  --shadow-color: rgba(0, 0, 0, 0.6); /* Sombras suaves e profundas */
+
+  /* --- Transições e Radius --- */
+  --transition-speed: 0.3s;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
 
   body {
     margin: 0;
@@ -26,12 +41,12 @@
   }
 
   aside {
-    width: 250px;
+    width: 80px;
+    max-width: 50px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     padding: 1rem;
-    border-right: 1px solid #333;
+    border: none;
     background: var(--bg-secondary);
     transition: background 0.3s, border-color 0.3s;
   }
@@ -43,10 +58,11 @@
 
   .logo {
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1rem;
     margin-bottom: 2rem;
     color: var(--primary-color);
     cursor: pointer;
+    text-align: center;
   }
 
   
@@ -55,6 +71,13 @@
     background: #eee;
     color: var(--black);
     border: 1px solid #ccc;
+  }
+
+  nav{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   nav ul {
@@ -69,21 +92,28 @@
     padding: 0.6rem 0.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background 0.3s;
     color: var(--text-light);
+  }
+
+  nav ul li a{
+        color: var(--text-muted);
+  }
+
+  .active{
+    color: var(--primary-color);
   }
 
   body.light nav ul li {
     color: var(--black);
   }
 
-  body.dark nav ul li:hover {
-    background: var(--primary-hover);
+
+  body.dark nav ul li:hover span {
+    color: var(--primary-color);
   }
 
-  body.light nav ul li:hover {
-    background: var(--primary-color);
-    color: #fff;
+  body.light nav ul li:hover span {
+    color: var(--primary-hover);
   }
 
   nav ul li .icon {

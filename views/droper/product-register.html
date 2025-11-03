@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Produtos | GWA RP</title>
+
+  <!-- LINKS CSS -->
+  <link rel="stylesheet" href="/css/aside.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/register-product.css">
+
+  <!-- ICONES -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- LOGIN CHECK -->
+  <script>
+    fetch('/dashboard')
+      .then(res => {
+        if (res.status === 403) window.location.href = '/login.html';
+      })
+      .catch(() => window.location.href = '/login.html');
+  </script>
+
+  <style>
+    /* Ajustes finos pra casar com o estilo do painel */
+    .form-header-title h2 {
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+
+    .form-header-title p {
+      color: var(--text-muted);
+      margin-top: 0;
+      font-size: 0.9rem;
+    }
+
+    h3 {
+      color: var(--text-light);
+      margin-top: 15px;
+    }
+
+    label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    #formProduto input,
+    #formProduto select,
+    #formProduto textarea {
+      background-color: var(--input-bg);
+      border: 1px solid #444;
+      color: var(--text-light);
+      border-radius: 8px;
+      transition: border-color 0.2s;
+    }
+
+    #formProduto input:focus,
+    #formProduto select:focus,
+    #formProduto textarea:focus {
+      border-color: var(--primary-color);
+    }
+
+    /* Ajuste do botão */
+    .register-btn {
+      background: var(--primary-color);
+      border: none;
+      color: var(--text-light);
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .register-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .avatar-register {
+      background: var(--primary-color);
+    }
+
+    .price-register button {
+      background: var(--primary-color);
+      border: none;
+      color: var(--text-light);
+      transition: background 0.2s;
+    }
+
+    .price-register button:hover {
+      background: var(--primary-hover);
+    }
+  </style>
+</head>
+
+<body class="dark">
+  <!-- MENU LATERAL -->
+  <aside>
+    <div>
+      <div class="logo">GWA</div>
+    <nav>
+      <ul>
+        <!-- Início -->
+        <li><a href="/dashboard" title="Início"><span class="material-symbols-outlined">home</span></a></li>
+
+        <!-- Produtos -->
+        <li><a href="/products/register" title="Cadastrar Produto"><span class="material-symbols-outlined">add</span></a></li>
+        <li><a href="/products/list" title="Lista de Produtos"><span class="material-symbols-outlined">inventory_2</span></a></li>
+
+        <!-- Clientes -->
+        <li><a href="/clients/list" title="Clientes"><span class="material-symbols-outlined">group</span></a></li>
+
+        <!-- Pedidos -->
+        <li><a href="/droper/orders" title="Pedidos"><span class="material-symbols-outlined">local_shipping</span></a></li>
+
+        <!-- ⚙️ Configuração da Loja -->
+        <li><a href="/config" title="Configurações da Loja"><span class="material-symbols-outlined">settings</span></a></li>
+
+        <!-- Sair -->
+        <li><a href="/logout" title="Sair"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+      </ul>
+    </nav>
+
+    </div>
+    <div class="profile">
+      <img src="/images/images.png" alt="Profile">
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main>
+    <div class="main-container">
+      <!-- FORMULÁRIO -->
+      <div class="form-area">
+        <div class="form-header-title">
+          <h2>Cadastro de Produto</h2>
+          <p>Preencha os dados abaixo para cadastrar um novo produto.</p>
+        </div>
+
+        <form id="formProduto" action="/products/add" method="POST" enctype="multipart/form-data">
+          <input type="file" name="mainImage" accept="image/*">
+          <input type="text" id="name" name="name" placeholder="Nome do Produto" required>
+
+          <select id="category" name="category" required>
+            <option value="">Categoria</option>
+            <option value="camisetas">Camisetas</option>
+            <option value="moletons">Moletons</option>
+            <option value="calçados">Calçados</option>
+            <option value="acessorios">Acessórios</option>
+          </select>
+
+          <textarea id="description" name="description" placeholder="Descrição do Produto"></textarea>
+          <input type="text" id="brand" placeholder="Nome da Marca" name="brand">
+          <input type="number" step="0.01" id="price" name="price" placeholder="Preço" required>
+          <input type="number" id="stock" name="stock" min="0" placeholder="Estoque">
+
+          <select id="condition" name="product_condition">
+            <option value="">Condição</option>
+            <option value="novo">Novo</option>
+            <option value="usado">Usado</option>
+          </select>
+
+          <input type="text" id="sku" name="sku" placeholder="SKU Ex: CAMI-BONITA-0001">
+
+          <select id="status" name="status" required>
+            <option value="">Status</option>
+            <option value="ativo">Ativo</option>
+            <option value="inativo">Inativo</option>
+          </select>
+
+          <h3>Variações</h3>
+          <div id="variacoesContainer"></div>
+          <button type="button" class="register-btn" onclick="addVariacao()">+ Adicionar Variação</button>
+
+          <label>Peso do pacote (kg):</label>
+          <input type="text" id="peso" name="peso">
+
+          <label>Dimensões (cm):</label>
+          <div style="display:flex; gap:10px;">
+            <input type="number" name="altura" placeholder="Altura" min="0">
+            <input type="number" name="largura" placeholder="Largura" min="0">
+            <input type="number" name="comprimento" placeholder="Comprimento" min="0">
+          </div>
+
+          <label>Outros atributos:</label>
+          <textarea id="atributos" name="atributos"></textarea>
+
+          <button class="register-btn" type="submit">Salvar Produto</button>
+        </form>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="card-preview-register" id="previewCard">
+        <div class="avatar-register" id="previewAvatar">📦</div>
+        <div class="info-product">
+          <p id="previewBrand">Marca</p>
+          <h3 id="previewName">Nome do Produto</h3>
+          <p id="previewDescription">Descrição curta do produto...</p>
+          <p id="previewCategory">Categoria</p>
+          <div class="price-register">
+            <p id="previewPrice">R$ 0,00</p>
+            <button disabled>Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+<script>
+  // -------------------------------
+  // MAPA DE CORES (PT → EN/HEX)
+  // -------------------------------
+  const colorMap = {
+    "preto": "#000000",
+    "branco": "#ffffff",
+    "vermelho": "red",
+    "azul": "blue",
+    "verde": "green",
+    "amarelo": "yellow",
+    "cinza": "gray",
+    "rosa": "pink",
+    "roxo": "purple",
+    "laranja": "orange",
+    "marrom": "brown",
+    "bege": "#f5f5dc",
+    "dourado": "gold",
+    "prata": "silver"
+  };
+
+  // -------------------------------
+  // PREVIEW EM TEMPO REAL (TEXTO)
+  // -------------------------------
+  function bindPreview(inputId, previewId, placeholder, transform = v => v) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+
+    if (!input || !preview) return;
+
+    input.addEventListener("input", () => {
+      const value = input.value.trim();
+      preview.textContent = transform(value || placeholder);
+    });
+  }
+
+  bindPreview("name", "previewName", "Nome do Produto");
+  bindPreview("category", "previewCategory", "Categoria: ---", v => v);
+  bindPreview("price", "previewPrice", "Preço: R$ 0,00", v => "R$ " + (v || "0,00"));
+  bindPreview("brand", "previewBrand", "Marca: ---", v => v);
+
+  // -------------------------------
+  // PREVIEW DA DESCRIÇÃO CURTA
+  // -------------------------------
+  const descriptionInput = document.getElementById("description");
+  const previewDescription = document.getElementById("previewDescription");
+  if (descriptionInput && previewDescription) {
+    descriptionInput.addEventListener("input", () => {
+      let value = descriptionInput.value.trim();
+      if (value.length > 60) value = value.substring(0, 60) + "...";
+      previewDescription.textContent = value || "Descrição curta do produto...";
+    });
+  }
+
+  // -------------------------------
+  // PREVIEW DA IMAGEM PRINCIPAL
+  // -------------------------------
+  const mainImageInput = document.querySelector('input[name="mainImage"]');
+  const previewAvatar = document.getElementById("previewAvatar");
+
+  if (mainImageInput) {
+    mainImageInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          previewAvatar.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewAvatar.textContent = "📦";
+      }
+    });
+  }
+
+  // -------------------------------
+  // VARIAÇÕES DINÂMICAS COM IMAGEM
+  // -------------------------------
+  let variacoes = [];
+
+function addVariacao() {
+  const container = document.getElementById("variacoesContainer");
+
+  const div = document.createElement("div");
+  div.classList.add("variacao");
+
+  div.innerHTML = `
+    <label>Nome da Variação:</label>
+    <input type="text" class="variacaoNome" placeholder="Ex: Cor, Tamanho">
+
+    <label>Opções:</label>
+    <div class="opcoes"></div>
+    <button type="button" class="register-btn" onclick="addOpcao(this)">+ Adicionar Opção</button>
+    <hr>
+  `;
+
+  container.appendChild(div);
+
+  const inputNome = div.querySelector(".variacaoNome");
+  const opcoesDiv = div.querySelector(".opcoes");
+  const btnAdd = div.querySelector("button.register-btn");
+
+  // Quando o nome da variação é alterado
+  inputNome.addEventListener("input", () => {
+    const nome = inputNome.value.trim().toLowerCase();
+
+    // Limpa opções anteriores
+    opcoesDiv.innerHTML = "";
+
+    // Se for "tamanho", cria automaticamente P, M, G, GG usando addOpcao()
+    if (nome === "tamanho") {
+      ["P", "M", "G", "GG"].forEach(valor => {
+        // Cria uma opção através da função original (mantém estrutura)
+        addOpcao(btnAdd);
+        // Pega a última criada e define o valor
+        const ultimaOpcao = opcoesDiv.lastElementChild.querySelector(".variacaoOpcao");
+        ultimaOpcao.value = valor;
+      });
+    }
+
+    atualizarPreviewVariacoes();
+  });
+}
+
+
+function addOpcao(btn) {
+  const opcoesDiv = btn.previousElementSibling;
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("variacaoOpcaoWrapper");
+
+  const variacaoDiv = btn.closest(".variacao");
+  const nomeVariacao = variacaoDiv.querySelector(".variacaoNome")?.value.trim().toLowerCase();
+
+  wrapper.innerHTML = `
+    <input type="text" class="variacaoOpcao" placeholder="Ex: Azul, Verde, P, M, G">
+    <input type="file" class="variacaoImagem" accept="image/*" style="margin-top:5px;">
+    <div class="miniPreview" style="margin-top:5px;"></div>
+  `;
+
+  opcoesDiv.appendChild(wrapper);
+
+  const inputTexto = wrapper.querySelector(".variacaoOpcao");
+  const inputFile = wrapper.querySelector(".variacaoImagem");
+  const miniPreview = wrapper.querySelector(".miniPreview");
+
+  // ✅ Desabilita imagem se a variação não for "cor"
+  if (nomeVariacao !== "cor" && nomeVariacao !== "cores") {
+    inputFile.disabled = true;
+    inputFile.style.display = "none";
+    miniPreview.style.display = "none";
+  }
+
+  // Eventos
+  inputTexto.addEventListener("input", atualizarPreviewVariacoes);
+
+  inputFile.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        miniPreview.innerHTML = `<img src="${event.target.result}" alt="variação" style="width:40px;height:40px;border-radius:6px;object-fit:cover;">`;
+        atualizarPreviewVariacoes();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      miniPreview.innerHTML = "";
+    }
+  });
+}
+
+  // -------------------------------
+  // PREVIEW DAS VARIAÇÕES
+  // -------------------------------
+  function atualizarPreviewVariacoes() {
+    let previewVariacoes = document.getElementById("previewVariacoes");
+
+    if (!previewVariacoes) {
+      previewVariacoes = document.createElement("div");
+      previewVariacoes.id = "previewVariacoes";
+      document.getElementById("previewCard").appendChild(previewVariacoes);
+    }
+
+    previewVariacoes.innerHTML = "";
+
+    document.querySelectorAll(".variacao").forEach(div => {
+      const nome = div.querySelector(".variacaoNome")?.value.trim();
+      const opcoes = [...div.querySelectorAll(".variacaoOpcaoWrapper")];
+
+      if (nome && opcoes.length) {
+        const variacaoDiv = document.createElement("div");
+        variacaoDiv.style.marginTop = "10px";
+
+        const titulo = document.createElement("p");
+        titulo.textContent = nome + ":";
+        titulo.style.fontWeight = "600";
+        variacaoDiv.appendChild(titulo);
+
+        const lista = document.createElement("div");
+        lista.style.display = "flex";
+        lista.style.flexWrap = "wrap";
+        lista.style.gap = "8px";
+
+        opcoes.forEach(wrapper => {
+          const valor = wrapper.querySelector(".variacaoOpcao")?.value.trim();
+          const img = wrapper.querySelector(".miniPreview img")?.src;
+
+          if (!valor) return;
+
+          const item = document.createElement("div");
+          item.style.display = "flex";
+          item.style.flexDirection = "column";
+          item.style.alignItems = "center";
+
+          if (img) {
+            const imgEl = document.createElement("img");
+            imgEl.src = img;
+            imgEl.style.width = "40px";
+            imgEl.style.height = "40px";
+            imgEl.style.borderRadius = "6px";
+            imgEl.style.objectFit = "cover";
+            item.appendChild(imgEl);
+          }
+
+          const texto = document.createElement("span");
+          texto.textContent = valor;
+          texto.style.fontSize = "0.85rem";
+          texto.style.color = "#ccc";
+          item.appendChild(texto);
+
+          lista.appendChild(item);
+        });
+
+        variacaoDiv.appendChild(lista);
+        previewVariacoes.appendChild(variacaoDiv);
+      }
+    });
+  }
+
+  // -------------------------------
+  // ENVIO DO FORMULÁRIO (CORRIGIDO)
+  // -------------------------------
+  document.getElementById("formProduto").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+    const variacoes = [];
+
+    document.querySelectorAll(".variacao").forEach((divVar, i) => {
+      const nome = divVar.querySelector(".variacaoNome").value.trim();
+      const opcoes = [];
+
+      divVar.querySelectorAll(".variacaoOpcaoWrapper").forEach((wrap, j) => {
+        const valor = wrap.querySelector(".variacaoOpcao").value.trim();
+        const file = wrap.querySelector(".variacaoImagem").files[0];
+        if (!valor) return;
+
+        const op = { valor };
+        if (file) {
+          const fieldName = `variation_${i}_${j}`;
+          formData.append(fieldName, file);
+          op.imagem = fieldName;
+        }
+        opcoes.push(op);
+      });
+
+      if (nome && opcoes.length) variacoes.push({ nome, opcoes });
+    });
+
+    formData.append("variacoes", JSON.stringify(variacoes));
+
+    const res = await fetch("/products/add", {
+      method: "POST",
+      body: formData
+    });
+
+    if (res.ok) {
+      alert("✅ Produto cadastrado com sucesso!");
+      window.location.href = "/products/list";
+    } else {
+      alert("❌ Erro ao cadastrar produto.");
+    }
+  });
+</script>
+
+
+</body>
+
+</html>

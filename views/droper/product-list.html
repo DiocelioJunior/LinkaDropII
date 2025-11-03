@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Produtos | GWA RP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/aside.css">
+  <style>
+    :root {
+      /* --- Cores de Fundo (Escuro) --- */
+      --black: #000000;
+      --bg-primary: #121212;
+      /* Fundo principal: quase preto, ideal para dark mode */
+      --bg-secondary: #1E1E1E;
+      /* Fundo de cards e seções: cinza escuro */
+      --input-bg: #2A2A2A;
+      /* Fundo de inputs e áreas de interação */
+
+      /* --- Cores de Texto (Claro) --- */
+      --text-light: #F1F1F1;
+      /* Texto principal: quase branco */
+      --text-muted: #B0B0B0;
+      /* Texto secundário/rótulos: cinza claro */
+
+      /* --- Cores de Destaque (Vibrante) --- */
+      --primary-color: #3399FF;
+      /* Azul vibrante principal */
+      --primary-hover: #1A73E8;
+      /* Azul mais escuro para hover/foco */
+
+      /* --- Cores de Bordas e Sombras --- */
+      --border-color: #2E2E2E;
+      /* Bordas sutis em tons escuros */
+      --shadow-color: rgba(0, 0, 0, 0.6);
+      /* Sombras suaves e profundas */
+
+      /* --- Transições e Radius --- */
+      --transition-speed: 0.3s;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      height: 100vh;
+      transition: background 0.3s, color 0.3s;
+      background: var(--bg-primary);
+      color: var(--text-light);
+    }
+
+    body.light {
+      background: #f9f9f9;
+      color: var(--black);
+    }
+
+
+    body.light aside {
+      background: #fff;
+      border-right: 1px solid #ccc;
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      color: var(--primary-color);
+      cursor: pointer;
+      text-align: center;
+    }
+
+
+
+    body.light {
+      background: #eee;
+      color: var(--black);
+      border: 1px solid #ccc;
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      display: flex;
+      align-items: center;
+      padding: 0.6rem 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+    }
+
+    nav ul li a {
+      color: var(--text-muted);
+    }
+
+    .active {
+      color: var(--primary-color);
+    }
+
+    body.light nav ul li {
+      color: var(--black);
+    }
+
+
+    body.dark nav ul li:hover span {
+      color: var(--primary-color);
+    }
+
+    body.light nav ul li:hover span {
+      color: var(--primary-hover);
+    }
+
+    nav ul li .icon {
+      margin-right: 0.8rem;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid #333;
+    }
+
+    body.light .profile {
+      border-top: 1px solid #ccc;
+    }
+
+    .profile img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin-right: 0.8rem;
+    }
+
+    /* ====== MAIN ====== */
+    main {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .main-container {
+    background: var(--bg-secondary);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    overflow: auto;
+    height: 500px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: var(--text-light);
+    }
+
+    /* ====== TABLE ====== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--input-bg);
+      text-align: left;
+    }
+
+    th {
+      padding: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    td {
+      padding: 14px;
+      border-top: 1px solid #333;
+      vertical-align: middle;
+      color: var(--text-light);
+    }
+
+    tr:hover {
+      background: #2c2d31;
+    }
+
+    img.prod-img {
+      width: 45px;
+      height: 45px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .status {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: white;
+      display: inline-block;
+      text-transform: capitalize;
+    }
+
+    .status.ativo {
+      background: #22c55e;
+    }
+
+    .status.inativo {
+      background: #ef4444;
+    }
+
+    /* ====== BUTTONS ====== */
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .btn-edit {
+      color: var(--primary-color);
+    }
+
+    .btn-edit:hover {
+      color: var(--primary-hover);
+    }
+
+    .btn-delete {
+      color: #f87171;
+    }
+
+    .btn-delete:hover {
+      color: #ef4444;
+    }
+
+    /* ====== BARRA DE FILTROS ====== */
+    .filtros {
+      background: var(--bg-secondary);
+      padding: 15px 20px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px var(--shadow-color);
+    }
+
+    .filtros select,
+    .filtros input {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      min-width: 140px;
+      outline: none;
+      transition: border var(--transition-speed), box-shadow var(--transition-speed);
+    }
+
+    .filtros select:focus,
+    .filtros input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 5px var(--primary-color);
+    }
+
+    .filtros button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background var(--transition-speed);
+    }
+
+    .filtros button:hover {
+      background: var(--primary-hover);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- MENU LATERAL -->
+  <aside>
+    <div>
+      <div class="logo">GWA</div>
+    <nav>
+      <ul>
+        <!-- Início -->
+        <li><a href="/dashboard" title="Início"><span class="material-symbols-outlined">home</span></a></li>
+
+        <!-- Produtos -->
+        <li><a href="/products/register" title="Cadastrar Produto"><span class="material-symbols-outlined">add</span></a></li>
+        <li><a href="/products/list" title="Lista de Produtos"><span class="material-symbols-outlined">inventory_2</span></a></li>
+
+        <!-- Clientes -->
+        <li><a href="/clients/list" title="Clientes"><span class="material-symbols-outlined">group</span></a></li>
+
+        <!-- Pedidos -->
+        <li><a href="/droper/orders" title="Pedidos"><span class="material-symbols-outlined">local_shipping</span></a></li>
+
+        <!-- ⚙️ Configuração da Loja -->
+        <li><a href="/config" title="Configurações da Loja"><span class="material-symbols-outlined">settings</span></a></li>
+
+        <!-- Sair -->
+        <li><a href="/logout" title="Sair"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+      </ul>
+    </nav>
+
+    </div>
+    <div class="profile">
+      <img src="https://i.pravatar.cc/35" alt="Profile">
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main>
+    <!-- FILTROS -->
+    <!-- FILTROS -->
+<div class="filtros">
+  <input 
+    type="text" 
+    id="buscaProduto" 
+    placeholder="🔍 Buscar por nome ou SKU..." 
+    style="flex:1; min-width:200px;"
+    oninput="aplicarFiltros()"
+  >
+
+  <select id="filtroCategoria">
+    <option value="">Todas as categorias</option>
+  </select>
+
+  <select id="filtroStatus">
+    <option value="">Todos os status</option>
+    <option value="ativo">Ativo</option>
+    <option value="inativo">Sem estoque</option>
+  </select>
+
+  <input type="number" id="filtroPrecoMin" placeholder="Preço mínimo" style="width:120px;">
+  <input type="number" id="filtroPrecoMax" placeholder="Preço máximo" style="width:120px;">
+
+  <button onclick="aplicarFiltros()"
+    style="padding:4px 10px; background: var(--primary-color); color:white; border:none; border-radius:5px; cursor:pointer;">Filtrar</button>
+</div>
+
+
+    <div class="main-container">
+      <h2>📦 Meus Produtos</h2>
+      <table id="tabelaProdutos">
+        <thead>
+          <tr>
+            <th>Imagem</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="7">Carregando...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+ <!-- 🖼️ MODAL DE VISUALIZAÇÃO DE IMAGENS -->
+<div id="modalImagens" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  flex-direction: column;
+">
+  <button id="fecharModal" style="
+    background:none;
+    color:white;
+    border:none;
+    font-size:28px;
+    position:absolute;
+    top:20px;
+    right:30px;
+    cursor:pointer;
+  ">✖</button>
+
+  <img id="imgModal" src="" alt="Visualização" style="
+    max-width: 85%;
+    max-height: 80%;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    object-fit: contain;
+  ">
+
+  <div id="setasModal" style="
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    gap: 40px;
+  ">
+    <button id="anterior" style="font-size:30px; background:none; border:none; color:white; cursor:pointer;">⟨</button>
+    <button id="proximo" style="font-size:30px; background:none; border:none; color:white; cursor:pointer;">⟩</button>
+  </div>
+</div>
+  
+  <script>
+  let produtosCarregados = [];
+
+// =================== CARREGAR PRODUTOS ===================
+async function carregarProdutos() {
+  const res = await fetch("/api/products");
+  const produtos = await res.json();
+  produtosCarregados = produtos;
+
+  const tbody = document.querySelector("#tabelaProdutos tbody");
+  tbody.innerHTML = "";
+
+  if (!produtos.length) {
+    tbody.innerHTML = `<tr><td colspan="7">Nenhum produto cadastrado ainda.</td></tr>`;
+    return;
+  }
+
+  // Popular categorias no select
+  const selectCategoria = document.getElementById("filtroCategoria");
+  const categorias = [...new Set(produtos.map(p => p.category))];
+  selectCategoria.innerHTML = `<option value="">Todas as categorias</option>`;
+  categorias.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    selectCategoria.appendChild(option);
+  });
+
+  renderizarTabela(produtos);
+}
+
+// =================== RENDERIZAR TABELA ===================
+function renderizarTabela(lista) {
+  const tbody = document.querySelector("#tabelaProdutos tbody");
+  tbody.innerHTML = "";
+
+  lista.forEach(p => {
+    // --- Garante que o campo "extra" sempre seja um objeto válido ---
+    let extra = {};
+    try {
+      if (typeof p.extra === "string") {
+        extra = JSON.parse(p.extra);
+      } else if (typeof p.extra === "object" && p.extra !== null) {
+        extra = p.extra;
+      }
+    } catch {
+      extra = {};
+    }
+
+    // --- Corrige o caminho da imagem principal ---
+    let mainImagePath = extra.mainImage || "";
+    if (mainImagePath) {
+      mainImagePath = mainImagePath
+        .replace(/\\/g, "/") // troca \ por /
+        .replace(/^.*\/uploads\//, "/uploads/"); // garante que começa em /uploads/
+    }
+
+    const mainImg = mainImagePath
+      ? `<img src="${mainImagePath}" alt="img" class="prod-img">`
+      : "📦";
+
+    // --- Monta miniaturas das variações ---
+    let miniaturas = "";
+    if (extra.variacoes && Array.isArray(extra.variacoes)) {
+  extra.variacoes.forEach(v => {
+    v.opcoes?.forEach(opt => {
+      if (opt.imagem) {
+        const imgPath = opt.imagem
+          .replace(/\\/g, "/")
+          .replace(/^.*\/uploads\//, "/uploads/");
+        miniaturas += `
+          <img 
+            src="${imgPath}" 
+            title="${opt.valor || ''}" 
+            onclick="abrirModal(${JSON.stringify(
+              v.opcoes
+                .filter(o => o.imagem)
+                .map(o => o.imagem.replace(/\\/g, '/').replace(/^.*\/uploads\//, '/uploads/'))
+            )}, ${v.opcoes.findIndex(o => o.imagem === opt.imagem)})"
+            style="width:30px; height:30px; border-radius:6px; object-fit:cover; margin-left:4px; cursor:pointer;"
+          >
+        `;
+      }
+    });
+  });
+}
+
+
+    const status = p.stock > 0
+      ? `<span class="status ativo">Ativo</span>`
+      : `<span class="status inativo">Sem estoque</span>`;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>
+        ${mainImg}
+        <div style="display:flex; margin-top:4px;">${miniaturas}</div>
+      </td>
+      <td>${p.name}</td>
+      <td>${p.category}</td>
+      <td>R$ ${Number(p.price).toFixed(2)}</td>
+      <td>${p.stock}</td>
+      <td>${status}</td>
+      <td>
+        <button class="btn-edit" onclick="editar(${p.id})">✏️</button>
+        <button class="btn-delete" onclick="excluir(${p.id})">🗑️</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+
+// =================== FILTRO GLOBAL ===================
+function aplicarFiltros() {
+  const termoBusca = document.getElementById("buscaProduto")?.value.trim().toLowerCase() || "";
+  const categoria = document.getElementById("filtroCategoria").value;
+  const statusFiltro = document.getElementById("filtroStatus").value;
+  const precoMin = parseFloat(document.getElementById("filtroPrecoMin").value) || 0;
+  const precoMax = parseFloat(document.getElementById("filtroPrecoMax").value) || Infinity;
+
+  const filtrados = produtosCarregados.filter(p => {
+    let extra = {};
+try {
+  if (typeof p.extra === "string") {
+    extra = JSON.parse(p.extra);
+  } else if (typeof p.extra === "object" && p.extra !== null) {
+    extra = p.extra;
+  }
+} catch {
+  extra = {};
+}
+
+    const status = p.stock > 0 ? "ativo" : "inativo";
+
+    // 🔹 Busca em nome, SKU e variações
+    const nomeMatch = p.name?.toLowerCase().includes(termoBusca);
+    const skuMatch = p.sku?.toLowerCase().includes(termoBusca);
+
+    let variacaoMatch = false;
+    if (extra.variacoes && Array.isArray(extra.variacoes)) {
+      variacaoMatch = extra.variacoes.some(v =>
+        v.nome?.toLowerCase().includes(termoBusca) ||
+        v.opcoes?.some(opt => opt.valor?.toLowerCase().includes(termoBusca))
+      );
+    }
+
+    return (
+      (!categoria || p.category === categoria) &&
+      (!statusFiltro || status === statusFiltro) &&
+      p.price >= precoMin &&
+      p.price <= precoMax &&
+      (!termoBusca || nomeMatch || skuMatch || variacaoMatch)
+    );
+  });
+
+  renderizarTabela(filtrados);
+}
+
+// =================== AÇÕES ===================
+function editar(id) {
+  window.location.href = "/products/edit/" + id;
+}
+
+async function excluir(id) {
+  if (!confirm("Deseja realmente excluir este produto?")) return;
+  const res = await fetch("/products/delete/" + id, { method: "DELETE" });
+  if (res.ok) {
+    alert("✅ Produto excluído!");
+    carregarProdutos();
+  } else {
+    alert("❌ Erro ao excluir produto.");
+  }
+}
+
+
+
+    function editar(id) {
+      window.location.href = "/products/edit/" + id;
+    }
+
+    async function excluir(id) {
+      if (!confirm("Deseja realmente excluir este produto?")) return;
+      const res = await fetch("/products/delete/" + id, { method: "DELETE" });
+      if (res.ok) {
+        alert("✅ Produto excluído!");
+        carregarProdutos();
+      } else {
+        alert("❌ Erro ao excluir produto.");
+      }
+    }
+
+    // =================== VISUALIZADOR DE IMAGENS ===================
+let imagensModal = [];
+let indiceAtual = 0;
+
+function abrirModal(imagens, indice = 0) {
+  imagensModal = imagens;
+  indiceAtual = indice;
+  const modal = document.getElementById("modalImagens");
+  const img = document.getElementById("imgModal");
+
+  img.src = imagensModal[indiceAtual];
+  modal.style.display = "flex";
+}
+
+function fecharModal() {
+  document.getElementById("modalImagens").style.display = "none";
+}
+
+function navegarModal(direcao) {
+  if (!imagensModal.length) return;
+  indiceAtual = (indiceAtual + direcao + imagensModal.length) % imagensModal.length;
+  document.getElementById("imgModal").src = imagensModal[indiceAtual];
+}
+
+// Eventos dos botões
+document.getElementById("fecharModal").onclick = fecharModal;
+document.getElementById("anterior").onclick = () => navegarModal(-1);
+document.getElementById("proximo").onclick = () => navegarModal(1);
+
+// Fecha modal ao clicar fora da imagem
+document.getElementById("modalImagens").addEventListener("click", e => {
+  if (e.target.id === "modalImagens") fecharModal();
+});
+
+
+    carregarProdutos();
+  </script>
+
+ 
+</div>
+
+</body>
+
+</html>

@@ -3,68 +3,84 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const path = require("path");
 
-module.exports = function(db) { // <-- recebe a conexão do server.js
+module.exports = function (db) {
   const router = express.Router();
 
-  // Credenciais do admin
   const ADMIN_EMAIL = "admin@exemplo.com";
   const ADMIN_PASSWORD = "senhaSuperSegura";
 
   // --- POST /login ---
   router.post("/login", async (req, res) => {
-    const { email, senha } = req.body;
+    const { email, password } = req.body;
 
     // Verificação ADMIN
-    if (email === ADMIN_EMAIL && senha === ADMIN_PASSWORD) {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       req.session.user = {
         id: 0,
         name: "Administrador",
         email: ADMIN_EMAIL,
         isAdmin: true,
       };
-      return res.redirect("/admin.html");
+      console.log("✅ Login admin:", email);
+      return res.redirect("/admin/home");
     }
 
-    // Verificação de usuários comuns no banco
+    // Verificação de usuários comuns
     db.query("SELECT * FROM dropers WHERE email = ?", [email], async (err, results) => {
-      if (err) return res.status(500).send("Erro no servidor");
-      if (results.length === 0) return res.send("⚠️ Usuário não encontrado!");
+      if (err) {
+        console.error("❌ Erro MySQL:", err);
+        return res.status(500).send("Erro no servidor");
+      }
+      if (results.length === 0) {
+        console.warn("⚠️ Usuário não encontrado:", email);
+        return res.sendFile("index.html", { root: path.join(__dirname, "../public") });
+      }
 
       const user = results[0];
-      const senhaCorreta = await bcrypt.compare(senha, user.password);
-      if (!senhaCorreta) return res.send("⚠️ Senha incorreta!");
 
-      // Sessão do usuário comum
-      req.session.user = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        isAdmin: false,
-      };
+      if (!password || !user.password) {
+        console.warn("⚠️ Falha de login: senha ou hash ausente", {
+          passwordRecebida: !!password,
+          hashNoBanco: !!user.password,
+        });
+        return res.sendFile("index.html", { root: path.join(__dirname, "../public") });
+      }
 
-      res.redirect("/dashboard.html");
+      try {
+        const senhaCorreta = await bcrypt.compare(password, user.password);
+        if (!senhaCorreta) {
+          console.warn("⚠️ Senha incorreta para:", email);
+          return res.sendFile("index.html", { root: path.join(__dirname, "../public") });
+        }
+
+        req.session.user = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          isAdmin: false,
+        };
+
+        console.log("✅ Login usuário:", user.email);
+        res.redirect("/dashboard");
+      } catch (err) {
+        console.error("❌ Erro no bcrypt.compare:", err);
+        res.status(500).send("Erro interno no login");
+      }
     });
   });
 
-  // --- GET /admin ---
-  router.get("/admin", (req, res) => {
-    if (!req.session.user || !req.session.user.isAdmin) {
-      return res.status(403).send("⛔ Acesso negado");
-    }
-    res.sendFile(path.join(__dirname, "../public/admin.html"));
-  });
-
   // --- GET /logout ---
-router.get("/logout", (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      console.error("Erro ao fazer logout:", err);
-      return res.status(500).send("Erro ao encerrar a sessão");
-    }
-    res.redirect("/index.html"); // redireciona para a página de login
+  router.get("/logout", (req, res) => {
+    req.session.destroy(err => {
+      if (err) {
+        console.error("❌ Erro ao fazer logout:", err);
+        return res.status(500).send("Erro ao encerrar a sessão");
+      }
+      res.clearCookie("connect.sid");
+      console.log("👋 Logout realizado com sucesso");
+      res.sendFile("index.html", { root: path.join(__dirname, "../public") });
+    });
   });
-});
-
 
   return router;
 };

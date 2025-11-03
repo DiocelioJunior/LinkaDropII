@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | GWA RP</title>
+  <link rel="stylesheet" href="/css/aside.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <style>
+    body.dark {
+      background: #0f1115;
+      color: #fff;
+    }
+
+    /* --- Estilo do identificador do usuário --- */
+    .user-info {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      color: #bbb;
+      border-top: 1px solid #333;
+      padding-top: 10px;
+    }
+    .user-info strong {
+      display: block;
+      color: #fff;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* --- Link da loja pública --- */
+    .store-link-box {
+      background: #1e1f26;
+      border-radius: 10px;
+      padding: 15px 20px;
+      margin: 20px;
+      text-align: center;
+      color: #ddd;
+      font-size: 0.95rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    .store-link-box a {
+      color: #4ade80;
+      text-decoration: none;
+      font-weight: bold;
+      word-break: break-all;
+    }
+
+    .store-link-box a:hover {
+      text-decoration: underline;
+    }
+
+    .copy-btn {
+      background: #22c55e;
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 10px;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: #16a34a;
+    }
+  </style>
+</head>
+
+<body class="dark">
+<aside>
+  <div>
+    <div class="logo">GWA</div>
+    <nav>
+      <ul>
+        <!-- Início -->
+        <li><a href="/dashboard" title="Início"><span class="material-symbols-outlined">home</span></a></li>
+
+        <!-- Produtos -->
+        <li><a href="/products/register" title="Cadastrar Produto"><span class="material-symbols-outlined">add</span></a></li>
+        <li><a href="/products/list" title="Lista de Produtos"><span class="material-symbols-outlined">inventory_2</span></a></li>
+
+        <!-- Clientes -->
+        <li><a href="/clients/list" title="Clientes"><span class="material-symbols-outlined">group</span></a></li>
+
+        <!-- Pedidos -->
+        <li><a href="/droper/orders" title="Pedidos"><span class="material-symbols-outlined">local_shipping</span></a></li>
+
+        <!-- ⚙️ Configuração da Loja -->
+        <li><a href="/config" title="Configurações da Loja"><span class="material-symbols-outlined">settings</span></a></li>
+
+        <!-- Loja pública -->
+        <li id="public-store-link">
+          <a href="#" title="Minha Loja Pública"><span class="material-symbols-outlined">storefront</span></a>
+        </li>
+
+        <!-- Sair -->
+        <li><a href="/logout" title="Sair"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="profile">
+    <img src="/images/images.png" alt="Profile">
+  </div>
+</aside>
+
+<main style="margin-left:260px; padding:30px;">
+  <div id="storeLinkBox" class="store-link-box" style="display:none;">
+    🌐 Sua loja pública: 
+    <a id="storeLink" href="#" target="_blank"></a>
+    <button class="copy-btn" onclick="copiarLink()">Copiar</button>
+  </div>
+</main>
+
+<script>
+  let droperId = null;
+
+  async function carregarUsuario() {
+    try {
+      const res = await fetch("/api/session-user");
+      if (!res.ok) throw new Error("Falha ao buscar usuário");
+      const user = await res.json();
+
+      if (user && user.id) {
+        droperId = user.id;
+        atualizarLinkLoja();
+      }
+    } catch (err) {
+      console.error("Erro ao carregar usuário:", err);
+    }
+  }
+
+  function atualizarLinkLoja() {
+    if (!droperId) return;
+
+    const linkEl = document.getElementById("storeLink");
+    const boxEl = document.getElementById("storeLinkBox");
+    const linkMenu = document.querySelector("#public-store-link a");
+
+    // ✅ Corrigido: rota pública sem /login
+    const linkCompleto = `${window.location.origin}/clients/${droperId}`;
+
+    // Atualiza link na interface
+    linkEl.href = linkCompleto;
+    linkEl.textContent = linkCompleto;
+    linkMenu.href = linkCompleto;
+    linkMenu.target = "_blank";
+    boxEl.style.display = "block";
+  }
+
+  function copiarLink() {
+    const link = document.getElementById("storeLink").textContent;
+    navigator.clipboard.writeText(link);
+    alert("✅ Link copiado: " + link);
+  }
+
+  carregarUsuario();
+</script>
+
+</body>
+</html>

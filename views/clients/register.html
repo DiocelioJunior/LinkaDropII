@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👥 Cadastrar Usuário - GWA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/aside.css">
+
+  <style>
+    :root {
+      --bg-primary: #0f1115;
+      --bg-secondary: #1c1d22;
+      --input-bg: #2b2c31;
+      --text-light: #f5f5f5;
+      --text-muted: #b0b0b0;
+      --primary-color: #3399ff;
+      --primary-hover: #1a73e8;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-light);
+      display: flex;
+      margin: 0;
+    }
+
+    main {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    /* ==== FORMULÁRIO ==== */
+    .main-container {
+      flex: 1.2;
+      background: var(--bg-secondary);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    form{
+      height: 100%;
+      max-height: 490px;
+      overflow: auto;
+    }
+
+    form::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    form::-webkit-scrollbar-thumb {
+      background:var(--bg-secondary);;
+      border-radius: 4px;
+    }
+
+    form::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    h2 {  
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+
+    p.sub {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input,
+    textarea {
+      background: var(--input-bg);
+      border: 1px solid #333;
+      color: var(--text-light);
+      padding: 10px;
+      border-radius: var(--radius);
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      background: var(--primary-color);
+      border: none;
+      color: #fff;
+      padding: 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+    }
+
+    /* ==== CARD DE PRÉVIA ==== */
+    .preview {
+      flex: 0.8;
+      background: #15161a;
+      border-radius: var(--radius);
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .preview h3 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .preview p {
+      margin: 6px 0;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .preview strong {
+      color: var(--text-light);
+    }
+
+    @media (max-width: 900px) {
+      main {
+        flex-direction: column;
+      }
+      .preview {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body class="dark">
+  <!-- Painel lateral -->
+  <aside>
+    <div class="logo">GWA</div>
+    <nav>
+      <ul>
+        <li><a href="/dashboard"><span class="material-symbols-outlined">home</span></a></li>
+        <li><a href="/products/register"><span class="material-symbols-outlined">add</span></a></li>
+        <li><a href="/products/list"><span class="material-symbols-outlined">inventory_2</span></a></li>
+        <li><a href="/clients/register" class="active"><span class="material-symbols-outlined">person_add</span></a></li>
+        <li><a href="/clients/list"><span class="material-symbols-outlined">group</span></a></li>
+        <li><a href="/logout"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+      </ul>
+    </nav>
+    <div class="profile">
+      <img src="/images/images.png" alt="Profile">
+    </div>
+  </aside>
+
+  <!-- Conteúdo principal -->
+  <main>
+    <!-- Formulário original mantido -->
+    <div class="main-container">
+      <h2>👥 Cadastrar Usuário</h2>
+      <p class="sub">Preencha os dados abaixo para adicionar um novo cliente.</p>
+
+      <form action="/clients/add" method="POST">
+        <label for="name">Nome</label>
+        <input type="text" name="name" id="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required>
+
+        <label for="password">Senha</label>
+        <input type="password" name="password" id="password" required>
+
+        <label for="telefone">Telefone</label>
+        <input type="text" name="telefone" id="telefone" placeholder="(xx) xxxxx-xxxx">
+
+        <label for="endereco">Endereço</label>
+        <textarea name="endereco" id="endereco" placeholder="Rua, número, bairro, cidade..."></textarea>
+
+        <label for="observacoes">Observações</label>
+        <textarea name="observacoes" id="observacoes" placeholder="Ex: prefere entrega à tarde..."></textarea>
+
+        <button type="submit">Cadastrar Usuário</button>
+      </form>
+    </div>
+
+    <!-- Pré-visualização ao lado -->
+    <div class="preview">
+      <h3>Pré-visualização</h3>
+      <p><strong>Nome:</strong> <span id="prevName">-</span></p>
+      <p><strong>Email:</strong> <span id="prevEmail">-</span></p>
+      <p><strong>Telefone:</strong> <span id="prevTelefone">-</span></p>
+    </div>
+  </main>
+
+  <script>
+    // Atualização dinâmica da prévia
+    const campos = ['name', 'email', 'telefone'];
+    campos.forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        const spanId = 'prev' + id.charAt(0).toUpperCase() + id.slice(1);
+        document.getElementById(spanId).textContent =
+          document.getElementById(id).value || '-';
+      });
+    });
+  </script>
+</body>
+
+</html>

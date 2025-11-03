@@ -1,81 +1,96 @@
+// routes/admin.js
 const express = require("express");
 const bcrypt = require("bcrypt");
+const path = require("path");
+
 const router = express.Router();
 
-module.exports = function(db) {
-
-  // Middleware para checar se é admin
+module.exports = function (db) {
+  // --- Middlewares ---
   function checkAdmin(req, res, next) {
     if (!req.session.user || !req.session.user.isAdmin) {
-      return res.status(403).send("⛔ Acesso negado");
+      return res.redirect("/index.html"); // redireciona para login
     }
     next();
   }
 
-  // Middleware para desabilitar cache do navegador
   function noCache(req, res, next) {
-    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+    res.set("Pragma", "no-cache");
+    res.set("Expires", "0");
     next();
   }
 
-  // Serve o HTML do admin users
+  // --- Rotas protegidas ---
+  // Página: lista de usuários
   router.get("/admin/users", checkAdmin, noCache, (req, res) => {
-    res.sendFile("admin-user-dropers.html", { root: "./public" });
+    res.sendFile("admin-user-dropers.html", {
+      root: path.join(__dirname, "../views/admin")
+    });
   });
 
-router.get("/admin/users-json", checkAdmin, noCache, (req, res) => {
-  db.query("SELECT id, name, email, created_at, dados FROM dropers", (err, results) => {
-    if (err) return res.status(500).json({ error: "Erro ao buscar usuários" });
+  // Página: edição
+  router.get("/admin/edit", checkAdmin, noCache, (req, res) => {
+    res.sendFile("admin-edit.html", {
+      root: path.join(__dirname, "../views/admin")
+    });
+  });
 
-    const users = results.map(user => {
-      // Converte a string JSON para objeto
-      if (user.dados && typeof user.dados === "string") {
-        try {
-          user.dados = JSON.parse(user.dados);
-        } catch (e) {
-          console.error("Erro ao parsear dados JSON:", e);
+  // Página: home do admin
+  router.get("/admin/home", checkAdmin, noCache, (req, res) => {
+    res.sendFile("admin.html", {
+      root: path.join(__dirname, "../views/admin")
+    });
+  });
+
+  // --- API ---
+  // Listar todos usuários
+  router.get("/admin/users-json", checkAdmin, noCache, (req, res) => {
+    db.query("SELECT id, name, email, created_at, dados FROM dropers", (err, results) => {
+      if (err) return res.status(500).json({ error: "Erro ao buscar usuários" });
+
+      const users = results.map(user => {
+        if (user.dados && typeof user.dados === "string") {
+          try {
+            user.dados = JSON.parse(user.dados);
+          } catch (e) {
+            console.error("Erro ao parsear dados JSON:", e);
+            user.dados = {};
+          }
+        } else if (!user.dados) {
           user.dados = {};
         }
-      } else if (!user.dados) {
-        user.dados = {};
-      }
-      return user;
+        return user;
+      });
+
+      res.json(users);
     });
-
-    // Mostra no console do Node.js
-    console.log("USUÁRIOS:", users);
-
-    res.json(users);
   });
-});
 
-
-  // Buscar usuário por ID
+  // Buscar usuário por ID (dados básicos)
   router.get("/admin/users/:id", checkAdmin, noCache, (req, res) => {
     const { id } = req.params;
     db.query("SELECT id, name, email FROM dropers WHERE id = ?", [id], (err, results) => {
-      if (err || results.length === 0) return res.status(404).json({ error: "Usuário não encontrado" });
+      if (err || results.length === 0) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+      }
       res.json(results[0]);
     });
   });
 
-  // Serve o HTML de edição
-  router.get("/admin/edit", checkAdmin, noCache, (req, res) => {
-    res.sendFile("admin-edit.html", { root: "./public" });
-  });
-
   // Buscar usuário por ID (todos os dados)
-router.get("/admin/users/:id", checkAdmin, noCache, (req, res) => {
-  const { id } = req.params;
-  db.query("SELECT * FROM dropers WHERE id = ?", [id], (err, results) => {
-    if (err || results.length === 0) return res.status(404).json({ error: "Usuário não encontrado" });
-    res.json(results[0]); // retorna todos os campos
+  router.get("/admin/users/:id/full", checkAdmin, noCache, (req, res) => {
+    const { id } = req.params;
+    db.query("SELECT * FROM dropers WHERE id = ?", [id], (err, results) => {
+      if (err || results.length === 0) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+      }
+      res.json(results[0]);
+    });
   });
-});
-
 
   // Atualizar usuário
-  router.put("/admin/users/:id", checkAdmin, (req, res) => {
+  router.put("/admin/users/:id", checkAdmin, noCache, (req, res) => {
     const { id } = req.params;
     const { name, email, password } = req.body;
 
@@ -86,8 +101,10 @@ router.get("/admin/users/:id", checkAdmin, noCache, (req, res) => {
       if (password && password.trim() !== "") {
         bcrypt.hash(password, 10, (err, hashed) => {
           if (err) return res.status(500).json({ error: "Erro ao atualizar senha" });
+
           query = "UPDATE dropers SET name = ?, email = ?, password = ? WHERE id = ?";
           params = [name, email, hashed, id];
+
           db.query(query, params, (err) => {
             if (err) return res.status(500).json({ error: "Erro ao atualizar usuário" });
             res.json({ success: true });
@@ -100,7 +117,7 @@ router.get("/admin/users/:id", checkAdmin, noCache, (req, res) => {
         });
       }
     } catch (err) {
-      console.error(err);
+      console.error("❌ Erro interno:", err);
       res.status(500).json({ error: "Erro interno" });
     }
   });

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Produto | GWA RP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/aside.css">
+  <style>
+:root {
+    /* Cores de Fundo (Claro) */
+    --black: #000000;
+    --bg-primary: #F8F9FA;
+    /* Fundo principal: Branco muito claro/quase branco */
+    --bg-secondary: #FFFFFF;
+    /* Fundo de cards/áreas secundárias: Branco puro */
+    --input-bg: #E9ECEF;
+    /* Fundo de campos de input/seleção: Cinza claro */
+
+    /* Cores de Texto (Escuro) */
+    --text-light: #212529;
+    /* Texto principal: Preto escuro */
+    --text-muted: #6C757D;
+    /* Texto secundário/rótulos: Cinza médio */
+
+    /* Cores de Destaque (Vibrante) */
+    --primary-color: #007BFF;
+    /* Azul vibrante (Destaque principal) */
+    --primary-hover: #0056B3;
+    /* Azul mais escuro para hover */
+}
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-light);
+      display: flex;
+      margin: 0;
+    }
+    /* ==== MAIN ==== */
+    main {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .main-container {
+      display: flex;
+      gap: 30px;
+      width: 100%;
+      height: calc(100vh - 80px);
+    }
+
+    /* ==== FORM ==== */
+    .form-area {
+      flex: 2;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color) transparent;
+    }
+
+    .form-area::-webkit-scrollbar {
+      width: 8px;
+    }
+    .form-area::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 10px;
+    }
+
+    h2 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--text-light);
+      border: 1px solid #444;
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary-color);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    button[type="submit"] {
+      background: var(--primary-color);
+      border: none;
+      color: var(--text-light);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    button[type="submit"]:hover {
+      background: var(--primary-hover);
+    }
+
+    /* ==== PREVIEW ==== */
+    .card-preview {
+      flex: 1;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100%;
+    }
+
+    .preview-image {
+      width: 100%;
+      height: 50%;
+      background: var(--primary-color);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .preview-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .preview-info {
+      margin-top: 15px;
+    }
+
+    .preview-info h3 {
+      color: var(--primary-color);
+      margin: 8px 0;
+    }
+
+    .preview-info p {
+      color: var(--text-muted);
+      margin: 5px 0;
+    }
+
+    .preview-price {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .preview-price p {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--text-light);
+    }
+
+    .preview-price button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .preview-price button:hover {
+      background: var(--primary-hover);
+    }
+
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+        height: auto;
+      }
+      .card-preview {
+        height: auto;
+      }
+    }
+  </style>
+</head>
+
+<body class="dark">
+  <aside>
+    <div>
+      <div class="logo">GWA</div>
+    <nav>
+      <ul>
+        <!-- Início -->
+        <li><a href="/dashboard" title="Início"><span class="material-symbols-outlined">home</span></a></li>
+
+        <!-- Produtos -->
+        <li><a href="/products/register" title="Cadastrar Produto"><span class="material-symbols-outlined">add</span></a></li>
+        <li><a href="/products/list" title="Lista de Produtos"><span class="material-symbols-outlined">inventory_2</span></a></li>
+
+        <!-- Clientes -->
+        <li><a href="/clients/list" title="Clientes"><span class="material-symbols-outlined">group</span></a></li>
+
+        <!-- Pedidos -->
+        <li><a href="/droper/orders" title="Pedidos"><span class="material-symbols-outlined">local_shipping</span></a></li>
+
+        <!-- ⚙️ Configuração da Loja -->
+        <li><a href="/config" title="Configurações da Loja"><span class="material-symbols-outlined">settings</span></a></li>
+
+        <!-- Sair -->
+        <li><a href="/logout" title="Sair"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+      </ul>
+    </nav>
+
+    </div>
+    <div class="profile">
+      <img src="/images/images.png" alt="Profile">
+    </div>
+  </aside>
+
+  <main>
+    <div class="main-container">
+      <div class="form-area">
+        <h2>✏️ Editar Produto</h2>
+        <form id="formProduto" method="POST" enctype="multipart/form-data">
+          <label>Imagem principal:</label>
+          <input type="file" name="mainImage" accept="image/*" id="mainImage">
+
+          <label>Nome do Produto:</label>
+          <input type="text" id="name" name="name" required>
+
+          <label>Categoria:</label>
+          <input type="text" id="category" name="category" required>
+
+          <label>Descrição:</label>
+          <textarea id="description" name="description"></textarea>
+
+          <label>Marca:</label>
+          <input type="text" id="brand" name="brand">
+
+          <label>Preço:</label>
+          <input type="number" step="0.01" id="price" name="price" required>
+
+          <label>Estoque:</label>
+          <input type="number" id="stock" name="stock">
+
+          <label>Condição:</label>
+          <select id="condition" name="product_condition">
+            <option value="novo">Novo</option>
+            <option value="usado">Usado</option>
+          </select>
+
+          <label>SKU:</label>
+          <input type="text" id="sku" name="sku">
+
+          <label>Peso:</label>
+          <input type="text" id="peso" name="peso">
+
+          <label>Dimensões:</label>
+          <input type="text" id="dimensoes" name="dimensoes">
+
+          <label>Atributos:</label>
+          <textarea id="atributos" name="atributos"></textarea>
+
+          <button type="submit">Salvar Alterações</button>
+        </form>
+      </div>
+
+      <div class="card-preview">
+        <div class="preview-image" id="previewImg">📦</div>
+        <div class="preview-info">
+          <p id="previewBrand">Marca</p>
+          <h3 id="previewName">Nome do Produto</h3>
+          <p id="previewDescription">Descrição do produto...</p>
+          <p id="previewCategory">Categoria</p>
+          <div class="preview-price">
+            <p id="previewPrice">R$ 0,00</p>
+            <button disabled>Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const id = window.location.pathname.split("/").pop();
+    const form = document.getElementById("formProduto");
+
+    const preview = {
+      name: document.getElementById("previewName"),
+      price: document.getElementById("previewPrice"),
+      desc: document.getElementById("previewDescription"),
+      brand: document.getElementById("previewBrand"),
+      cat: document.getElementById("previewCategory"),
+      img: document.getElementById("previewImg"),
+    };
+
+    async function carregarProduto() {
+      const res = await fetch(`/api/products/${id}`);
+      if (!res.ok) {
+        alert("❌ Produto não encontrado");
+        window.location.href = "/products/list";
+        return;
+      }
+
+      const p = await res.json();
+      form.name.value = p.name;
+      form.category.value = p.category;
+      form.description.value = p.description || "";
+      form.brand.value = p.brand || "";
+      form.price.value = p.price;
+      form.stock.value = p.stock;
+      form.condition.value = p.product_condition;
+      form.sku.value = p.sku || "";
+      if (p.extra) {
+        form.peso.value = p.extra.peso || "";
+        form.dimensoes.value = p.extra.dimensoes || "";
+        form.atributos.value = p.extra.atributos || "";
+      }
+
+      preview.name.innerText = p.name;
+      preview.price.innerText = `R$ ${p.price}`;
+      preview.desc.innerText = p.description || "Sem descrição.";
+      preview.brand.innerText = p.brand || "Marca";
+      preview.cat.innerText = p.category || "Categoria";
+      if (p.extra?.mainImage)
+        preview.img.innerHTML = `<img src="${p.extra.mainImage}" alt="Produto">`;
+    }
+
+    carregarProduto();
+
+    form.addEventListener("input", () => {
+      preview.name.innerText = form.name.value || "Nome do Produto";
+      preview.price.innerText = form.price.value ? `R$ ${form.price.value}` : "R$ 0,00";
+      preview.desc.innerText = form.description.value || "Descrição do produto...";
+      preview.brand.innerText = form.brand.value || "Marca";
+      preview.cat.innerText = form.category.value || "Categoria";
+    });
+
+    document.getElementById("mainImage").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => preview.img.innerHTML = `<img src="${reader.result}" alt="Produto">`;
+        reader.readAsDataURL(file);
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const res = await fetch(`/products/update/${id}`, { method: "POST", body: formData });
+
+      if (res.ok) {
+        alert("✅ Produto atualizado com sucesso!");
+        window.location.href = "/products/list";
+      } else {
+        alert("❌ Erro ao atualizar produto");
+      }
+    });
+  </script>
+</body>
+</html>

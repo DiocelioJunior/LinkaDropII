@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedidos | GWA RP</title>
+
+  <!-- PDF libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+  <link rel="stylesheet" href="/css/aside.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-primary: #121212;
+      --bg-secondary: #1e1e1e;
+      --text-light: #f1f1f1;
+      --text-muted: #b0b0b0;
+      --primary-color: #3399ff;
+      --primary-hover: #1a73e8;
+      --border-color: #2e2e2e;
+      --input-bg: #2a2a2a;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-light);
+      display: flex;
+      margin: 0;
+    }
+
+    main {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .form-area {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      overflow-y: auto;
+      max-height: 80vh;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: var(--primary-color);
+      border-color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filters input,
+    .filters select {
+      background: var(--input-bg);
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    .filters button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .filters button:hover {
+      background: var(--primary-hover);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--text-muted);
+    }
+
+    tr:hover {
+      background: #2a2a2a;
+    }
+
+    .product-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .product-list li {
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .links a {
+      color: #60a5fa;
+      text-decoration: none;
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .notes {
+      margin-top: 6px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    select[data-id] {
+      background: var(--input-bg);
+      color: var(--text-light);
+      border: 1px solid #444;
+      border-radius: 5px;
+      padding: 5px;
+    }
+
+    .btn-pdf {
+      background: #22c55e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .btn-pdf:hover {
+      background: #16a34a;
+    }
+  </style>
+</head>
+
+<body>
+  <aside>
+    <div>
+      <div class="logo">GWA</div>
+    <nav>
+      <ul>
+        <!-- Início -->
+        <li><a href="/dashboard" title="Início"><span class="material-symbols-outlined">home</span></a></li>
+
+        <!-- Produtos -->
+        <li><a href="/products/register" title="Cadastrar Produto"><span class="material-symbols-outlined">add</span></a></li>
+        <li><a href="/products/list" title="Lista de Produtos"><span class="material-symbols-outlined">inventory_2</span></a></li>
+
+        <!-- Clientes -->
+        <li><a href="/clients/list" title="Clientes"><span class="material-symbols-outlined">group</span></a></li>
+
+        <!-- Pedidos -->
+        <li><a href="/droper/orders" title="Pedidos"><span class="material-symbols-outlined">local_shipping</span></a></li>
+
+        <!-- ⚙️ Configuração da Loja -->
+        <li><a href="/config" title="Configurações da Loja"><span class="material-symbols-outlined">settings</span></a></li>
+
+        <!-- Sair -->
+        <li><a href="/logout" title="Sair"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+      </ul>
+    </nav>
+    </div>
+    <div class="profile"><img src="/images/images.png" alt="Profile" /></div>
+  </aside>
+
+  <main>
+    <div class="form-area">
+      <h2>📦 Pedidos Recebidos</h2>
+
+      <div class="tabs" id="tabs">
+        <div class="tab active" data-status="">Todos (0)</div>
+        <div class="tab" data-status="pendente">Pendente (0)</div>
+        <div class="tab" data-status="processando">Processando (0)</div>
+        <div class="tab" data-status="enviado">Enviado (0)</div>
+        <div class="tab" data-status="concluido">Concluído (0)</div>
+      </div>
+
+      <div class="filters">
+        <input type="date" id="filtroData" />
+        <input type="text" id="filtroCliente" placeholder="Filtrar por cliente..." />
+        <button id="btnFiltrar">Filtrar</button>
+        <button id="btnLimpar">Limpar</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#ID</th>
+            <th>Cliente</th>
+            <th>Produtos</th>
+            <th>Status</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody id="tabela"></tbody>
+      </table>
+    </div>
+  </main>
+
+<script>
+  let todosPedidos = [];
+  let statusAtivo = "";
+
+  // === Carrega pedidos da API ===
+  async function carregarPedidos() {
+    try {
+      const res = await fetch("/api/orders/droper");
+      todosPedidos = await res.json();
+      atualizarContadores();
+      renderizarTabela(todosPedidos);
+    } catch (err) {
+      console.error("❌ Erro ao carregar pedidos:", err);
+    }
+  }
+
+  // === Atualiza contadores das abas ===
+  function atualizarContadores() {
+    const counts = {
+      total: todosPedidos.length,
+      pendente: todosPedidos.filter(p => p.status === "pendente").length,
+      processando: todosPedidos.filter(p => p.status === "processando").length,
+      enviado: todosPedidos.filter(p => p.status === "enviado").length,
+      concluido: todosPedidos.filter(p => p.status === "concluido").length
+    };
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      const status = tab.dataset.status;
+      const count = status ? counts[status] || 0 : counts.total;
+      const nome = tab.textContent.split("(")[0].trim();
+      tab.textContent = `${nome} (${count})`;
+    });
+  }
+
+  // === Renderiza pedidos na tabela ===
+  function renderizarTabela(pedidos) {
+    const tabela = document.getElementById("tabela");
+    tabela.innerHTML = "";
+
+    if (!pedidos.length) {
+      tabela.innerHTML = "<tr><td colspan='5'>Nenhum pedido encontrado.</td></tr>";
+      return;
+    }
+
+    pedidos.forEach(p => {
+      const tr = document.createElement("tr");
+      const orderId = p.id || "-";
+      const data = new Date(p.created_at).toLocaleString("pt-BR");
+
+      let produtosHTML = "";
+      try {
+        const items = typeof p.items_json === "string" ? JSON.parse(p.items_json) : p.items_json;
+        produtosHTML = `
+          <ul class="product-list">
+            ${items.map(i => `
+              <li>
+                <strong>${i.nome}</strong><br>
+                Qtd: ${i.qtd} • R$ ${i.preco.toFixed(2)}<br>
+                Variação: ${i.variacao || "N/A"}<br>
+                Tamanho: ${i.tamanho || "N/A"}<br>
+                <small>Subtotal: R$ ${(i.qtd * i.preco).toFixed(2)}</small>
+              </li>
+            `).join("")}
+          </ul>
+        `;
+      } catch {
+        produtosHTML = "<em>Erro ao ler produtos</em>";
+      }
+
+      const links = `
+        <div class="links">
+          ${p.nota_fiscal ? `<a href="${p.nota_fiscal}" target="_blank">📄 Nota Fiscal</a>` : ""}
+          ${p.etiqueta ? `<a href="${p.etiqueta}" target="_blank">🏷️ Etiqueta</a>` : ""}
+        </div>
+      `;
+
+      const notas = p.notes ? `<div class="notes">📝 ${p.notes}</div>` : "";
+      const pdfButton = `<button class="btn-pdf" onclick="gerarPDF(${p.id})">📄 Gerar PDF</button>`;
+
+      const statusSelect = `
+        <select data-id="${orderId}">
+          <option value="pendente" ${p.status === "pendente" ? "selected" : ""}>Pendente</option>
+          <option value="processando" ${p.status === "processando" ? "selected" : ""}>Processando</option>
+          <option value="enviado" ${p.status === "enviado" ? "selected" : ""}>Enviado</option>
+          <option value="concluido" ${p.status === "concluido" ? "selected" : ""}>Concluído</option>
+        </select>
+      `;
+
+      tr.innerHTML = `
+        <td>${orderId}</td>
+        <td>${p.client_name || "-"}<br><small>${p.client_email || ""}</small></td>
+        <td>${produtosHTML}${notas}${links}${pdfButton}</td>
+        <td>${statusSelect}</td>
+        <td>${data}</td>
+      `;
+
+      tabela.appendChild(tr);
+    });
+  }
+
+  // === FILTROS ===
+  function aplicarFiltros() {
+    const dataFiltro = document.getElementById("filtroData").value;
+    const clienteFiltro = document.getElementById("filtroCliente").value.toLowerCase();
+
+    let filtrados = [...todosPedidos];
+
+    // Filtro de data
+    if (dataFiltro) {
+      filtrados = filtrados.filter(p => {
+        const dataPedido = new Date(p.created_at).toISOString().split("T")[0];
+        return dataPedido === dataFiltro;
+      });
+    }
+
+    // Filtro de cliente
+    if (clienteFiltro) {
+      filtrados = filtrados.filter(p =>
+        (p.client_name && p.client_name.toLowerCase().includes(clienteFiltro)) ||
+        (p.client_email && p.client_email.toLowerCase().includes(clienteFiltro))
+      );
+    }
+
+    // Filtro por status da aba ativa
+    if (statusAtivo) {
+      filtrados = filtrados.filter(p => p.status === statusAtivo);
+    }
+
+    renderizarTabela(filtrados);
+  }
+
+  document.getElementById("btnFiltrar").addEventListener("click", aplicarFiltros);
+
+  document.getElementById("btnLimpar").addEventListener("click", () => {
+    document.getElementById("filtroData").value = "";
+    document.getElementById("filtroCliente").value = "";
+    statusAtivo = "";
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelector(".tab[data-status='']").classList.add("active");
+    renderizarTabela(todosPedidos);
+  });
+
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      statusAtivo = tab.dataset.status;
+      aplicarFiltros();
+    });
+  });
+
+  // === GERADOR DE PDF COMPLETO ===
+  async function gerarPDF(idPedido) {
+    const pedido = todosPedidos.find(p => p.id === idPedido);
+    if (!pedido) return alert("Pedido não encontrado!");
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+    const margem = 15;
+    let y = 20;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.text("GWA Store", 105, y, { align: "center" });
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.text("CNPJ: 00.000.000/0001-00", 105, y + 6, { align: "center" });
+    doc.text("Rua Exemplo, 123 - São Paulo/SP", 105, y + 12, { align: "center" });
+    doc.text("Telefone: (11) 99999-9999 • www.gwa.com.br", 105, y + 18, { align: "center" });
+
+    y += 30;
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("FATURA / PEDIDO", 105, y, { align: "center" });
+
+    y += 10;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("DADOS DO CLIENTE", margem, y);
+
+    y += 8;
+    doc.setFont("helvetica", "normal");
+    doc.text(`Nome: ${pedido.client_name || "Não informado"}`, margem, y);
+    y += 6;
+    doc.text(`E-mail: ${pedido.client_email || "Não informado"}`, margem, y);
+    y += 6;
+    doc.text(`Telefone: ${pedido.client_phone || "Não informado"}`, margem, y);
+    y += 6;
+    doc.text(`Endereço: ${pedido.client_address || "Não informado"}`, margem, y);
+    y += 6;
+    doc.text(`CPF/CNPJ: ${pedido.client_document || "Não informado"}`, margem, y);
+
+    y += 10;
+    doc.setFont("helvetica", "bold");
+    doc.text("DETALHES DO PEDIDO", margem, y);
+    doc.setFont("helvetica", "normal");
+    y += 6;
+    doc.text(`ID Pedido: ${pedido.id}`, margem, y);
+    y += 6;
+    doc.text(`Status: ${pedido.status}`, margem, y);
+    y += 6;
+    doc.text(`Data: ${new Date(pedido.created_at).toLocaleDateString("pt-BR")}`, margem, y);
+
+    let items = [];
+    try {
+      items = typeof pedido.items_json === "string" ? JSON.parse(pedido.items_json) : pedido.items_json;
+    } catch {
+      items = [];
+    }
+
+    const tabela = items.map((i, idx) => [
+      String(idx + 1).padStart(2, "0"),
+      i.nome + (i.variacao ? ` (${i.variacao})` : "") + (i.tamanho ? ` - Tam: ${i.tamanho}` : ""),
+      `R$ ${i.preco.toFixed(2)}`,
+      i.qtd,
+      `R$ ${(i.qtd * i.preco).toFixed(2)}`
+    ]);
+
+    doc.autoTable({
+      startY: y + 10,
+      head: [["#", "Descrição", "Preço", "Qtd", "Subtotal"]],
+      body: tabela,
+      theme: "grid",
+      headStyles: { fillColor: [51, 153, 255], textColor: 255 },
+      styles: { fontSize: 10, cellPadding: 4 },
+    });
+
+    const total = items.reduce((s, i) => s + i.qtd * i.preco, 0);
+    let posY = doc.lastAutoTable.finalY + 10;
+    doc.setFont("helvetica", "bold");
+    doc.text("TOTAL:", 140, posY);
+    doc.text(`R$ ${total.toFixed(2)}`, 180, posY, { align: "right" });
+
+    if (pedido.notes) {
+      posY += 10;
+      doc.setFont("helvetica", "bold");
+      doc.text("Observações:", margem, posY);
+      posY += 6;
+      doc.setFont("helvetica", "normal");
+      const obs = doc.splitTextToSize(pedido.notes, 180);
+      doc.text(obs, margem, posY);
+    }
+
+    posY = 280;
+    doc.setDrawColor(200);
+    doc.line(margem, posY - 6, 195, posY - 6);
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(10);
+    doc.text("GWA Store • Todos os direitos reservados", margem, posY);
+    doc.text("https://www.gwa.com.br", 195, posY, { align: "right" });
+
+    doc.save(`pedido_${pedido.id}.pdf`);
+  }
+
+  carregarPedidos();
+</script>
+
+
+</body>
+</html>

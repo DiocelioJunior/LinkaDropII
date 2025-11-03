@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações | GWA RP</title>
+  <link rel="stylesheet" href="/css/aside.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0f0f0f;
+      --bg-secondary: #1a1a1a;
+      --input-bg: #2a2a2a;
+      --text-light: #f1f1f1;
+      --text-muted: #b0b0b0;
+      --primary-color: #3399ff;
+      --primary-hover: #1a73e8;
+      --border-color: #333;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    body {
+      font-family: "Open Sans", sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-light);
+      display: flex;
+      margin: 0;
+    }
+
+    main {
+      flex: 1;
+      padding: 30px 50px;
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    /* === FORM === */
+    .form-box {
+      flex: 1.3;
+      background: var(--bg-secondary);
+      padding: 30px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
+
+    .form-box h2 {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    .form-box p {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      margin-top: 10px;
+      color: var(--text-light);
+    }
+
+    form input, form select {
+      width: 100%;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+
+    form input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .preview-img {
+      display: block;
+      max-width: 100%;
+      max-height: 100px;
+      margin-top: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: #222;
+    }
+
+    button {
+      width: 100%;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+    }
+
+    /* === PREVIEW === */
+    .preview-box {
+      flex: 1;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      text-align: center;
+      padding-bottom: 20px;
+    }
+
+    .preview-banner {
+      background: #2f59d6;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .preview-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .preview-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #111;
+      margin-top: -40px;
+      background: #111;
+      object-fit: cover;
+    }
+
+    .preview-name {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .preview-contact {
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-size: 0.9rem;
+    }
+
+    .preview-shipping {
+      color: #9ecfff;
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    .preview-button {
+      margin-top: 18px;
+      display: inline-block;
+      background: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      transition: background 0.2s ease;
+    }
+
+    .preview-button:hover {
+      background: var(--primary-hover);
+    }
+
+    #formConfig{
+      max-height: 500px;
+    overflow: auto;
+    }
+
+    #formConfig::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #formConfig::-webkit-scrollbar-thumb {
+      background: var(--bg-secondary);
+      border-radius: 4px;
+    }
+
+    #formConfig::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    #formConfig::-moz-scrollbar {
+      width: 8px;
+    }
+
+    #formConfig input{
+      box-sizing: border-box;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body class="dark">
+  <aside>
+    <div>
+      <div class="logo">GWA</div>
+    <nav>
+      <ul>
+        <!-- Início -->
+        <li><a href="/dashboard" title="Início"><span class="material-symbols-outlined">home</span></a></li>
+
+        <!-- Produtos -->
+        <li><a href="/products/register" title="Cadastrar Produto"><span class="material-symbols-outlined">add</span></a></li>
+        <li><a href="/products/list" title="Lista de Produtos"><span class="material-symbols-outlined">inventory_2</span></a></li>
+
+        <!-- Clientes -->
+        <li><a href="/clients/list" title="Clientes"><span class="material-symbols-outlined">group</span></a></li>
+
+        <!-- Pedidos -->
+        <li><a href="/droper/orders" title="Pedidos"><span class="material-symbols-outlined">local_shipping</span></a></li>
+
+        <!-- ⚙️ Configuração da Loja -->
+        <li><a href="/config" title="Configurações da Loja"><span class="material-symbols-outlined">settings</span></a></li>
+
+        <!-- Sair -->
+        <li><a href="/logout" title="Sair"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+      </ul>
+    </nav>
+    </div>
+    <div class="profile"><img src="/images/images.png" alt="Profile"></div>
+  </aside>
+
+  <main>
+    <!-- === FORMULÁRIO === -->
+    <div class="form-box">
+      <h2>⚙️ Configurar Loja</h2>
+      <p>Preencha os dados abaixo para personalizar sua loja pública.</p>
+
+      <form id="formConfig" enctype="multipart/form-data">
+        <label>Nome da Loja</label>
+        <input type="text" name="store_name" placeholder="Ex: DT Style" required>
+
+        <label>Logo da Loja</label>
+        <input type="file" name="logo" accept="image/*" id="logoInput">
+        <img id="logoPreview" class="preview-img" style="display:none;">
+
+        <label>Banner da Loja</label>
+        <input type="file" name="banner" accept="image/*" id="bannerInput">
+        <img id="bannerPreview" class="preview-img" style="display:none;">
+
+        <label>Número de Contato (WhatsApp)</label>
+        <input type="text" name="contact_number" id="contact_number" placeholder="(11) 99999-9999">
+
+        <label>Modo de Envio</label>
+        <select name="shipping_mode" id="shipping_mode">
+          <option value="por_item">Cobrar por peça</option>
+          <option value="retirada">Retirada no local</option>
+        </select>
+
+        <label>Valor do Frete por Peça (R$)</label>
+        <input type="number" step="0.01" name="shipping_value" id="shipping_value" value="0">
+
+        <button type="submit">💾 Salvar Configurações</button>
+      </form>
+    </div>
+
+    <!-- === PREVIEW === -->
+    <div class="preview-box">
+      <div class="preview-banner" id="previewBanner">
+        <img id="previewBannerImg" style="display:none;">
+      </div>
+      <img id="previewLogo" class="preview-logo" src="/images/images.png">
+      <div class="preview-name" id="previewName">Nome da Loja</div>
+      <div class="preview-contact" id="previewContact">(00) 00000-0000</div>
+      <div class="preview-shipping" id="previewShipping">Frete: R$ 0,00 por item</div>
+      <a href="#" target="_blank" class="preview-button" id="previewLink">Visitar Loja</a>
+    </div>
+  </main>
+
+  <script>
+    let droperId = null;
+
+    async function carregarUsuario() {
+      try {
+        const res = await fetch("/api/session-user");
+        const user = await res.json();
+        if (user && user.id) {
+          droperId = user.id;
+          carregarConfig();
+        }
+      } catch (err) {
+        console.error("Erro ao carregar usuário:", err);
+      }
+    }
+
+    async function carregarConfig() {
+      if (!droperId) return;
+      try {
+        const res = await fetch(`/api/store/config/${droperId}`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        const f = document.getElementById("formConfig");
+        f.store_name.value = data.store_name || "";
+        f.contact_number.value = data.contact_number || "";
+        f.shipping_mode.value = data.shipping_mode || "por_item";
+        f.shipping_value.value = data.shipping_value || 0;
+
+        atualizarPreview(data);
+      } catch (err) {
+        console.error("Erro ao carregar config:", err);
+      }
+    }
+
+    function atualizarPreview(data) {
+      document.getElementById("previewName").textContent = data.store_name || "Nome da Loja";
+      document.getElementById("previewContact").textContent = data.contact_number || "(00) 00000-0000";
+      document.getElementById("previewShipping").textContent = 
+        data.shipping_mode === "retirada"
+          ? "Modo de envio: Retirada no local"
+          : `Frete: R$ ${(data.shipping_value || 0).toFixed(2)} por item`;
+
+      if (data.logo_url) {
+        document.getElementById("previewLogo").src = data.logo_url;
+      }
+      if (data.banner_url) {
+        const banner = document.getElementById("previewBannerImg");
+        banner.src = data.banner_url;
+        banner.style.display = "block";
+      }
+      document.getElementById("previewLink").href = `/store/${droperId}`;
+    }
+
+    document.getElementById("logoInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        document.getElementById("logoPreview").src = url;
+        document.getElementById("logoPreview").style.display = "block";
+        document.getElementById("previewLogo").src = url;
+      }
+    });
+
+    document.getElementById("bannerInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        document.getElementById("bannerPreview").src = url;
+        document.getElementById("bannerPreview").style.display = "block";
+        const banner = document.getElementById("previewBannerImg");
+        banner.src = url;
+        banner.style.display = "block";
+      }
+    });
+
+    document.getElementById("formConfig").addEventListener("submit", async e => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      try {
+        const res = await fetch(`/api/store/config/update/${droperId}`, { method: "POST", body: formData });
+        if (res.ok) {
+          alert("✅ Configurações salvas com sucesso!");
+          carregarConfig();
+        } else alert("❌ Erro ao salvar configurações.");
+      } catch (err) {
+        alert("❌ Erro de conexão.");
+      }
+    });
+
+    carregarUsuario();
+  </script>
+</body>
+</html>

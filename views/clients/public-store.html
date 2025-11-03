@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalogo de Produtos </title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --card: #fff;
+      --text: #222;
+      --muted: #777;
+      --primary: #3399ff;
+      --primary-hover: #1a73e8;
+      --radius: 10px;
+      --whatsapp: #25d366;
+      --whatsapp-hover: #1ebe5d;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .store-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .store-info img {
+      height: 45px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+    }
+
+    .store-name {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    /* Botão WhatsApp */
+    .whatsapp-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--whatsapp);
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px;
+      border-radius: 50%;
+      font-size: 0.95rem;
+      transition: background 0.2s ease;
+    }
+
+    .whatsapp-btn:hover {
+      background: var(--whatsapp-hover);
+    }
+
+    .whatsapp-btn img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .banner {
+      width: 100%;
+      max-height: 100vh;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    main {
+      padding: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 16px;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin: 6px 0;
+      font-weight: 600;
+    }
+
+    /* Descrição resumida */
+    .card p.description {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 4px 0 8px;
+      line-height: 1.3;
+      height: 35px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Bloco de variações */
+    .variations {
+      margin-top: 6px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    .variation-line {
+      margin-top: 4px;
+    }
+
+    .variation-line span.label {
+      font-weight: 600;
+      color: #000;
+    }
+
+    .price {
+      color: #22c55e;
+      font-weight: 600;
+      margin-top: 6px;
+      font-size: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 40px 0;
+      border-top: 1px solid #ddd;
+    }
+
+    /* Carrossel de variações de cor */
+.carousel {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px 0 4px;
+  flex-wrap: wrap;
+}
+
+.carousel img.thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s;
+}
+
+.carousel img.thumb:hover {
+  transform: scale(1.1);
+  border-color: #999;
+}
+
+.carousel img.thumb.active {
+  border-color: var(--primary);
+  transform: scale(1.15);
+}
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="store-info">
+      <img id="storeLogo" src="https://via.placeholder.com/80" alt="Logo da Loja">
+      <div>
+        <div class="store-name" id="storeName">Nome da Loja</div>
+      </div>
+    </div>
+    <a id="whatsappBtn" class="whatsapp-btn" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
+    </a>
+    <a id="whatsappBtn" class="whatsapp-btn" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
+    </a>
+  </header>
+
+  <div class="banner" id="banner"></div>
+
+  <main id="produtos"></main>
+
+  <footer>© 2025 D.Coder - Todos os direitos reservados</footer>
+
+<script>
+  const droperId = window.location.pathname.split("/").pop();
+
+  async function carregarConfiguracao() {
+    const res = await fetch(`/api/store/config/${droperId}`);
+    if (!res.ok) return console.error("Erro ao carregar config");
+    const data = await res.json();
+
+    document.getElementById("storeName").textContent = data.store_name || "Minha Loja";
+
+    const numeroLimpo = (data.contact_number || "").replace(/\D/g, "");
+    const whatsappLink = numeroLimpo
+      ? `https://wa.me/55${numeroLimpo}?text=Olá!%20Vim%20pelo%20site%20da%20sua%20loja!`
+      : `https://wa.me/5500000000000`;
+    document.getElementById("whatsappBtn").href = whatsappLink;
+
+    if (data.logo_url) document.getElementById("storeLogo").src = data.logo_url;
+    if (data.banner_url)
+      document.getElementById("banner").innerHTML = `<img src="${data.banner_url}" alt="Banner da loja">`;
+  }
+
+  async function carregarProdutos() {
+    const res = await fetch(`/api/public-products/${droperId}`);
+    if (!res.ok) return console.error("Erro ao carregar produtos");
+    const produtos = await res.json();
+
+    const grid = document.getElementById("produtos");
+    grid.innerHTML = "";
+
+    if (!produtos.length) {
+      grid.innerHTML = "<p style='grid-column:1/-1;text-align:center;'>Nenhum produto disponível no momento.</p>";
+      return;
+    }
+
+    produtos.forEach(p => {
+      const extra = typeof p.extra === "string" ? JSON.parse(p.extra || "{}") : (p.extra || {});
+      const descricao = p.description && p.description.trim() !== "" ? p.description : "Sem descrição disponível.";
+
+      // 🖼️ Coleta todas as imagens possíveis
+      const mainImage = extra.mainImage || null;
+      const variationImages = Array.isArray(extra.variationImages) ? extra.variationImages : [];
+      const imagensVariacoes = [];
+
+      if (extra.variacoes && Array.isArray(extra.variacoes)) {
+        extra.variacoes.forEach(v => {
+          if (v.opcoes && Array.isArray(v.opcoes)) {
+            v.opcoes.forEach(o => {
+              if (o.imagem) imagensVariacoes.push(o.imagem);
+            });
+          }
+        });
+      }
+
+      const todasImagens = [...new Set([mainImage, ...variationImages, ...imagensVariacoes].filter(Boolean))];
+      const primeiraImg = todasImagens[0] || "https://via.placeholder.com/300x230?text=Produto";
+
+      // Miniaturas
+      let thumbsHTML = "";
+      if (todasImagens.length > 1) {
+        thumbsHTML = `
+          <div class="carousel">
+            ${todasImagens.map((img, idx) => `
+              <img src="${img}" class="thumb ${idx === 0 ? "active" : ""}" data-idx="${idx}" data-full="${img}">
+            `).join("")}
+          </div>
+        `;
+      }
+
+      // Variações textuais
+      let variacoesHTML = "";
+      if (extra.variacoes && Array.isArray(extra.variacoes)) {
+        variacoesHTML = extra.variacoes
+          .filter(v => v.nome.toLowerCase() !== "cor")
+          .map(v => {
+            const nome = v.nome;
+            const opcoes = v.opcoes?.map(o => o.valor).join(" | ");
+            return `<div class="variation-line"><span class="label">${nome}:</span> ${opcoes}</div>`;
+          })
+          .join("");
+      }
+
+      // Card HTML
+      const div = document.createElement("div");
+      div.classList.add("card");
+
+      div.innerHTML = `
+<div class="image-wrapper">
+  <button class="nav-btn prev" style="display:none;">&#10094;</button>
+  <img class="main-img" src="${primeiraImg}" alt="${p.name}">
+  <button class="nav-btn next" style="display:none;">&#10095;</button>
+</div>
+
+        ${thumbsHTML}
+        <div class="card-content">
+          <h3>${p.name}</h3>
+          <p class="description">${descricao}</p>
+          <p class="price">Faça login para ver o preço</p>
+          ${variacoesHTML ? `<div class="variations">${variacoesHTML}</div>` : ""}
+        </div>
+      `;
+
+      // Lógica de navegação das imagens
+      let currentIdx = 0;
+      const mainImg = div.querySelector(".main-img");
+      const prevBtn = div.querySelector(".prev");
+      const nextBtn = div.querySelector(".next");
+
+      function atualizarImagem(idx) {
+        currentIdx = (idx + todasImagens.length) % todasImagens.length;
+        mainImg.src = todasImagens[currentIdx];
+        div.querySelectorAll(".thumb").forEach((t, i) =>
+          t.classList.toggle("active", i === currentIdx)
+        );
+      }
+
+      prevBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        atualizarImagem(currentIdx - 1);
+      });
+
+      nextBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        atualizarImagem(currentIdx + 1);
+      });
+
+      div.addEventListener("click", e => {
+        if (e.target.classList.contains("thumb")) {
+          e.stopPropagation();
+          atualizarImagem(Number(e.target.dataset.idx));
+        }
+      });
+
+      grid.appendChild(div);
+    });
+  }
+
+  carregarConfiguracao();
+  carregarProdutos();
+</script>
+
+</body>
+</html>

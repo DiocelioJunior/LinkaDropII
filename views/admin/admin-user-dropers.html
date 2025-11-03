@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/aside.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/user-dropers.css">
+    <!--Link Icons-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+<script>
+  // Verifica se o usuário ainda está logado
+  fetch('/admin/users-json')
+    .then(res => {
+      if (res.status === 403) {
+        // Redireciona para login se não estiver logado
+        window.location.href = '/login.html';
+      }
+    })
+    .catch(() => window.location.href = '/login.html');
+</script>
+
+  </head>
+
+<body class="dark">
+  <aside>
+    <div>
+      <div class="logo">LOCO</div>
+      <nav>
+        <ul>
+          <li><a href="/admin/home"><span class="material-symbols-outlined">home</span></a></li>
+          <li><a href="/admin/users" class="active"><span class="material-symbols-outlined">group</span></a></li>
+          <li><a href="/register"><span class="material-symbols-outlined">person_add</span></a></li>
+          <li><a href="/logout"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+        </ul>
+      </nav>
+
+    </div>
+    <div class="profile">
+       <img src="/images/images.png" alt="Profile">
+      <span>Admin</span>
+    </div>
+  </aside>
+
+
+  <div class="main">
+    <div id="usersContainer"></div>
+  </div>
+
+ <script>
+  const body = document.body;
+  document.querySelector('.logo').addEventListener('click', () => {
+    body.classList.toggle('light');
+    body.classList.toggle('dark');
+  });
+
+  async function fetchUsers() {
+    try {
+      const res = await fetch('/admin/users-json');
+      const users = await res.json();
+      const container = document.getElementById('usersContainer');
+      container.innerHTML = '';
+
+      users.forEach(user => {
+        const card = document.createElement('div');
+        card.classList.add("userCard");
+
+        // Monta preview básico
+        card.innerHTML = `
+          <p id="id-user"><strong>ID:</strong> ${user.id}</p>
+          <p><strong>Nome:</strong> ${user.name}</p>
+          <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Criado em:</strong> ${new Date(user.created_at).toLocaleString()}</p>
+        `;
+
+        // Monta dados extras (se existirem)
+        let extrasDiv = null;
+        if (user.dados && typeof user.dados === 'object') {
+          let extrasHtml = '';
+          for (const key in user.dados) {
+            extrasHtml += `<p><strong>${key}:</strong> ${user.dados[key]}</p>`;
+          }
+
+          extrasDiv = document.createElement('div');
+          extrasDiv.classList.add("extras");
+          extrasDiv.style.display = "none";
+          extrasDiv.innerHTML = extrasHtml;
+        }
+
+        // Botões
+        const btnsDiv = document.createElement("div");
+        btnsDiv.style.marginTop = "0.5rem";
+
+        if (extrasDiv) {
+  const toggleBtn = document.createElement("button");
+  const toggleSpan = document.createElement("span");
+  toggleSpan.classList.add("material-symbols-outlined");
+  toggleSpan.textContent = "expand_circle_down"; // Ícone expandir
+  toggleBtn.appendChild(toggleSpan);
+
+  toggleBtn.addEventListener("click", () => {
+    if (extrasDiv.style.display === "none") {
+      extrasDiv.style.display = "block";
+      toggleSpan.textContent = "expand_circle_up"; // Ícone recolher
+    } else {
+      extrasDiv.style.display = "none";
+      toggleSpan.textContent = "expand_circle_down"; // Ícone expandir
+    }
+  });
+
+  btnsDiv.appendChild(toggleBtn);
+}
+
+const editBtn = document.createElement("button");
+const editSpan = document.createElement("span");
+editSpan.classList.add("material-symbols-outlined");
+editSpan.textContent = "edit"; // ✏️
+editBtn.appendChild(editSpan);
+editBtn.addEventListener("click", () => {
+  window.location.href = `/admin/edit?id=${user.id}`;
+});
+btnsDiv.appendChild(editBtn);
+
+const delBtn = document.createElement("button");
+const delSpan = document.createElement("span");
+delSpan.classList.add("material-symbols-outlined");
+delSpan.textContent = "delete"; // 🗑️
+delBtn.appendChild(delSpan);
+delBtn.addEventListener("click", () => deleteUser(user.id));
+btnsDiv.appendChild(delBtn);
+
+        card.appendChild(btnsDiv);
+
+        // Insere card e extras logo abaixo
+        container.appendChild(card);
+        if (extrasDiv) container.appendChild(extrasDiv);
+      });
+    } catch (err) {
+      console.error('Erro ao buscar usuários:', err);
+    }
+  }
+
+  async function deleteUser(id) {
+    if (!confirm('Deseja realmente excluir este usuário?')) return;
+    try {
+      const res = await fetch(`/admin/users/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        alert('Usuário deletado!');
+        fetchUsers();
+      } else {
+        alert('Erro ao deletar usuário');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Carrega usuários ao abrir a página
+  fetchUsers();
+</script>
+
+</body>
+
+</html>

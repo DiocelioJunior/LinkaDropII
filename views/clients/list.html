@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuarios | GWA RP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/aside.css">
+  <style>
+:root {
+  /* --- Cores de Fundo (Escuro) --- */
+  --black: #000000;
+  --bg-primary: #121212;     /* Fundo principal: quase preto, ideal para dark mode */
+  --bg-secondary: #1E1E1E;   /* Fundo de cards e seções: cinza escuro */
+  --input-bg: #2A2A2A;       /* Fundo de inputs e áreas de interação */
+
+  /* --- Cores de Texto (Claro) --- */
+  --text-light: #F1F1F1;     /* Texto principal: quase branco */
+  --text-muted: #B0B0B0;     /* Texto secundário/rótulos: cinza claro */
+
+  /* --- Cores de Destaque (Vibrante) --- */
+  --primary-color: #3399FF;  /* Azul vibrante principal */
+  --primary-hover: #1A73E8;  /* Azul mais escuro para hover/foco */
+
+  /* --- Cores de Bordas e Sombras --- */
+  --border-color: #2E2E2E;   /* Bordas sutis em tons escuros */
+  --shadow-color: rgba(0, 0, 0, 0.6); /* Sombras suaves e profundas */
+
+  /* --- Transições e Radius --- */
+  --transition-speed: 0.3s;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-light);
+      display: flex;
+      margin: 0;
+    }
+
+    /* ==== ASIDE ==== */
+
+    .logo {
+      color: var(--primary-color);
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      text-align: center;
+      padding: 0.6rem 0.5rem;
+    }
+
+    nav ul li a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    nav ul li a.active,
+    nav ul li a:hover {
+      color: var(--primary-color);
+    }
+
+    .profile {
+      display: flex;
+      justify-content: center;
+      padding-top: 1rem;
+      border-top: 1px solid #333;
+    }
+
+    .profile img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+    }
+
+    /* ==== MAIN ==== */
+    main {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .main-container {
+      background: var(--bg-secondary);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--input-bg);
+      text-align: left;
+    }
+
+    th,
+    td {
+      padding: 14px;
+      border-top: 1px solid #333;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--text-muted);
+    }
+
+    tr:hover {
+      background: #2c2d31;
+    }
+
+    .actions button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 18px;
+      margin-right: 8px;
+    }
+
+    .edit {
+      color: var(--primary-color);
+    }
+
+    .edit:hover {
+      color: var(--primary-hover);
+    }
+
+    .delete {
+      color: #f87171;
+    }
+
+    .delete:hover {
+      color: #ef4444;
+    }
+
+    .add-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .add-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    
+  </style>
+</head>
+
+<body class="dark">
+  <aside>
+    <div>
+      <div class="logo">GWA</div>
+    <nav>
+      <ul>
+        <!-- Início -->
+        <li><a href="/dashboard" title="Início"><span class="material-symbols-outlined">home</span></a></li>
+
+        <!-- Produtos -->
+        <li><a href="/products/register" title="Cadastrar Produto"><span class="material-symbols-outlined">add</span></a></li>
+        <li><a href="/products/list" title="Lista de Produtos"><span class="material-symbols-outlined">inventory_2</span></a></li>
+
+        <!-- Clientes -->
+        <li><a href="/clients/list" title="Clientes"><span class="material-symbols-outlined">group</span></a></li>
+
+        <!-- Pedidos -->
+        <li><a href="/droper/orders" title="Pedidos"><span class="material-symbols-outlined">local_shipping</span></a></li>
+
+        <!-- ⚙️ Configuração da Loja -->
+        <li><a href="/config" title="Configurações da Loja"><span class="material-symbols-outlined">settings</span></a></li>
+
+        <!-- Sair -->
+        <li><a href="/logout" title="Sair"><span class="material-symbols-outlined">exit_to_app</span></a></li>
+      </ul>
+    </nav>
+    </div>
+    <div class="profile">
+      <img src="/images/images.png" alt="Profile">
+    </div>
+  </aside>
+
+  <main>
+    <div class="main-container">
+      <h2>👥 Meus Usuários</h2>
+      <button class="add-btn" onclick="window.location.href='/clients/register'">+ Novo Usuário</button>
+
+      <table id="tabelaClientes">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Endereço</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="5">Carregando...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    async function carregarClientes() {
+      const res = await fetch('/api/clients');
+      const clientes = await res.json();
+
+      const tbody = document.querySelector("#tabelaClientes tbody");
+      tbody.innerHTML = "";
+
+      if (!clientes.length) {
+        tbody.innerHTML = `<tr><td colspan="5">Nenhum usuário cadastrado ainda.</td></tr>`;
+        return;
+      }
+
+      clientes.forEach(c => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${c.name}</td>
+          <td>${c.email || "-"}</td>
+          <td>${c.phone || "-"}</td>
+          <td>${c.address || "-"}</td>
+          <td class="actions">
+            <button class="edit" title="Editar"><span class="material-symbols-outlined">edit</span></button>
+            <button class="delete" title="Excluir" onclick="excluir(${c.id})"><span class="material-symbols-outlined">delete</span></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function excluir(id) {
+      if (!confirm("Deseja realmente excluir este usuário?")) return;
+      const res = await fetch(`/clients/delete/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        alert("✅ Usuário excluído!");
+        carregarClientes();
+      } else {
+        alert("❌ Erro ao excluir usuário.");
+      }
+    }
+
+    carregarClientes();
+  </script>
+</body>
+
+</html>
