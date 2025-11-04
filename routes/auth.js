@@ -10,11 +10,8 @@ module.exports = function (db) {
   const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
   // --- POST /login ---
-  router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-
-    // Verificação ADMIN
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+// Verificação ADMIN
+if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
   req.session.user = {
     id: 0,
     name: "Administrador",
@@ -30,9 +27,10 @@ module.exports = function (db) {
     console.log("✅ Login admin:", email);
     res.redirect("/admin/home");
   });
+
+  return; // <-- importante: evita continuar pro MySQL
 }
 
-    }
 
     // Usuários comuns
     db.query("SELECT * FROM dropers WHERE email = ?", [email], async (err, results) => {
@@ -91,4 +89,5 @@ module.exports = function (db) {
 
   return router;
 };
+
 
