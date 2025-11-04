@@ -2,12 +2,14 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const path = require("path");
+require("dotenv").config();
 
 module.exports = function (db) {
   const router = express.Router();
 
-  const ADMIN_EMAIL = "admin@exemplo.com";
-  const ADMIN_PASSWORD = "senhaSuperSegura";
+ // --- Admin controlado pelo .env ---
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
   // --- POST /login ---
   router.post("/login", async (req, res) => {
@@ -84,3 +86,4 @@ module.exports = function (db) {
 
   return router;
 };
+
