@@ -51,7 +51,6 @@ app.use(
       httpOnly: true,
       secure: process.env.SECURE_COOKIE === "true", // true só em produção
       sameSite: "lax",
-      domain: process.env.DOMAIN, // localhost agora, .seusite.com depois
       maxAge: 1000 * 60 * 60,
     },
   })
@@ -130,3 +129,4 @@ app.get("/clients/store/:droperId", requireClientLogin, (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
 });
+
