@@ -1,16 +1,11 @@
-// routes/auth.js
 const express = require("express");
 const bcrypt = require("bcrypt");
 const path = require("path");
 require("dotenv").config();
 
-console.log("🔑 ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
-console.log("🔑 ADMIN_PASSWORD:", process.env.ADMIN_PASSWORD);
-
 module.exports = function (db) {
   const router = express.Router();
 
- // --- Admin controlado pelo .env ---
   const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
   const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
@@ -30,32 +25,30 @@ module.exports = function (db) {
       return res.redirect("/admin/home");
     }
 
-    // Verificação de usuários comuns
+    // Usuários comuns
     db.query("SELECT * FROM dropers WHERE email = ?", [email], async (err, results) => {
       if (err) {
         console.error("❌ Erro MySQL:", err);
         return res.status(500).send("Erro no servidor");
       }
+
       if (results.length === 0) {
         console.warn("⚠️ Usuário não encontrado:", email);
-        return res.sendFile("index.html", { root: path.join(__dirname, "../public") });
+        return res.sendFile(path.join(__dirname, "../public/index.html"));
       }
 
       const user = results[0];
 
       if (!password || !user.password) {
-        console.warn("⚠️ Falha de login: senha ou hash ausente", {
-          passwordRecebida: !!password,
-          hashNoBanco: !!user.password,
-        });
-        return res.sendFile("index.html", { root: path.join(__dirname, "../public") });
+        console.warn("⚠️ Falha de login: senha ou hash ausente");
+        return res.sendFile(path.join(__dirname, "../public/index.html"));
       }
 
       try {
         const senhaCorreta = await bcrypt.compare(password, user.password);
         if (!senhaCorreta) {
           console.warn("⚠️ Senha incorreta para:", email);
-          return res.sendFile("index.html", { root: path.join(__dirname, "../public") });
+          return res.sendFile(path.join(__dirname, "../public/index.html"));
         }
 
         req.session.user = {
@@ -83,11 +76,9 @@ module.exports = function (db) {
       }
       res.clearCookie("connect.sid");
       console.log("👋 Logout realizado com sucesso");
-      res.sendFile("index.html", { root: path.join(__dirname, "../public") });
+      res.redirect("/"); // volta para login
     });
   });
 
   return router;
 };
-
-
