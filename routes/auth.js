@@ -15,14 +15,23 @@ module.exports = function (db) {
 
     // Verificação ADMIN
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      req.session.user = {
-        id: 0,
-        name: "Administrador",
-        email: ADMIN_EMAIL,
-        isAdmin: true,
-      };
-      console.log("✅ Login admin:", email);
-      return res.redirect("/admin/home");
+  req.session.user = {
+    id: 0,
+    name: "Administrador",
+    email: ADMIN_EMAIL,
+    isAdmin: true,
+  };
+
+  req.session.save(err => {
+    if (err) {
+      console.error("❌ Erro ao salvar sessão:", err);
+      return res.status(500).send("Erro interno");
+    }
+    console.log("✅ Login admin:", email);
+    res.redirect("/admin/home");
+  });
+}
+
     }
 
     // Usuários comuns
@@ -82,3 +91,4 @@ module.exports = function (db) {
 
   return router;
 };
+
