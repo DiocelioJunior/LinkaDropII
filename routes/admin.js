@@ -7,12 +7,13 @@ const router = express.Router();
 
 module.exports = function (db) {
   // --- Middlewares ---
-  function checkAdmin(req, res, next) {
-    if (!req.session.user || !req.session.user.isAdmin) {
-      return res.redirect("/index.html"); // redireciona para login
-    }
-    next();
+function checkAdmin(req, res, next) {
+  if (!req.session.user || !req.session.user.isAdmin) {
+    return res.redirect("/"); // aponta para / (seu login)
   }
+  next();
+}
+
 
   function noCache(req, res, next) {
     res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
@@ -133,3 +134,4 @@ module.exports = function (db) {
 
   return router;
 };
+
