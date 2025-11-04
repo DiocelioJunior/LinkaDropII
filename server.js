@@ -1,8 +1,4 @@
-require("dotenv").config(); // 👈 lê as variáveis do .env
-
-console.log("🔍 Variáveis carregadas:", process.env.DB_USER, process.env.DB_PASSWORD);
-
-
+require("dotenv").config(); // lê as variáveis do .env
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
@@ -10,13 +6,10 @@ const mysql = require("mysql2");
 const MySQLStore = require("express-mysql-session")(session);
 const { requireClientLogin } = require("./middlewares/clientAuth");
 
-
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
-// ------------------- CONEXÃO MYSQL -------------------
+// ------------------- Conexão MySQL -------------------
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -24,12 +17,12 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
 });
 
-db.connect((err) => {
+db.connect(err => {
   if (err) console.error("❌ Erro MySQL:", err);
   else console.log("✅ Conectado ao MySQL!");
 });
 
-// ------------------- SESSION STORE -------------------
+// ------------------- Session Store -------------------
 const sessionStore = new MySQLStore({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -40,28 +33,24 @@ const sessionStore = new MySQLStore({
   expiration: 1000 * 60 * 60,
 });
 
-app.use(
-  session({
-    key: "gwa_session_id",
-    secret: process.env.SESSION_SECRET,
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.SECURE_COOKIE === "true", // true só em produção
-      sameSite: "lax",
-      maxAge: 1000 * 60 * 60,
-    },
-  })
-);
+app.use(session({
+  key: "gwa_session_id",
+  secret: process.env.SESSION_SECRET,
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.SECURE_COOKIE === "true",
+    sameSite: "lax",
+    maxAge: 1000 * 60 * 60,
+  },
+}));
 
-// ------------------- MIDDLEWARES -------------------
+// ------------------- Middlewares -------------------
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// === SERVIR ARQUIVOS ESTÁTICOS (UPLOADS, CSS, ETC) ===
-// Corrige caminho absoluto independente do SO
 app.use("/uploads", express.static(path.resolve(__dirname, "public", "uploads")));
 
 // Evita cache em rotas autenticadas
@@ -72,7 +61,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// ------------------- ROTAS -------------------
+// Middleware para admin
+function checkAdmin(req, res, next) {
+  if (!req.session.user || !req.session.user.isAdmin) {
+    return res.redirect("/"); // redireciona para login
+  }
+  next();
+}
+
+// ------------------- Rotas -------------------
 const authRoutes = require("./routes/auth")(db);
 const registerRoutes = require("./routes/register")(db);
 const dashboardRoutes = require("./routes/dashboard")(db);
@@ -82,10 +79,8 @@ const clientsRoutes = require("./routes/clients")(db);
 const clientAuthRoutes = require("./routes/clientAuth")(db);
 const ordersRoutes = require("./routes/orders")(db);
 const droperConfigRoutes = require("./routes/storeConfig")(db);
-const storeConfigRoutes = require("./routes/storeConfig")(db); // ✅ adiciona esta
- // renomeado para clareza
+const storeConfigRoutes = require("./routes/storeConfig")(db);
 
-// 🧩 Ordem importa! Primeiro as rotas gerais, depois as específicas:
 app.use("/", ordersRoutes);
 app.use("/", clientAuthRoutes);
 app.use("/", authRoutes);
@@ -94,12 +89,10 @@ app.use("/", dashboardRoutes);
 app.use("/", adminRoutes);
 app.use("/", productsRoutes);
 app.use("/", clientsRoutes);
-
-// 🔥 Rota de configuração do droper vai por último (pra evitar conflito com /store/:droperId)
 app.use("/", droperConfigRoutes);
 app.use("/", storeConfigRoutes);
 
-// --- API para identificar o usuário logado ---
+// API para identificar usuário logado
 app.get("/api/session-user", (req, res) => {
   if (req.session.user) {
     res.json({
@@ -113,20 +106,22 @@ app.get("/api/session-user", (req, res) => {
   }
 });
 
-// ------------------- FALLBACK LOGIN -------------------
+// Fallback login
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
-// Protege o acesso à loja dos droppers
+// Protege acesso à loja dos droppers
 app.get("/clients/store/:droperId", requireClientLogin, (req, res) => {
   res.sendFile(path.join(__dirname, "views/clients/store.html"));
 });
 
+// Página do admin
+app.get("/admin/home", checkAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, "views/admin/admin.html"));
+});
 
-
-// ------------------- INICIA SERVIDOR -------------------
+// ------------------- Inicia servidor -------------------
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
 });
-
