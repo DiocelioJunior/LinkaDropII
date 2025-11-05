@@ -6,33 +6,26 @@ require("dotenv").config();
 module.exports = function (db) {
   const router = express.Router();
 
-  const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-
-  // --- POST /login ---
-// Verificação ADMIN
-if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-  req.session.user = {
-    id: 0,
-    name: "Administrador",
-    email: ADMIN_EMAIL,
-    isAdmin: true,
-  };
-
-  req.session.save(err => {
-    if (err) {
-      console.error("❌ Erro ao salvar sessão:", err);
-      return res.status(500).send("Erro interno");
-    }
-    console.log("✅ Login admin:", email);
-    res.redirect("/admin/home");
+  // Página de login (opcional)
+  router.get("/login", (req, res) => {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
   });
 
-  return; // <-- importante: evita continuar pro MySQL
-}
+  // --- POST /auth/login ---
+  router.post("/login", (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).send("Preencha todos os campos");
+    }
 
+    // 🧑‍💼 Login Admin
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+      req.session.user = { id: 0, name: "Administrador", email, isAdmin: true };
+      console.log("✅ Admin logado:", email);
+      return req.session.save(() => res.redirect("/admin/home"));
+    }
 
-    // Usuários comuns
+    // 👤 Login de usuário normal
     db.query("SELECT * FROM dropers WHERE email = ?", [email], async (err, results) => {
       if (err) {
         console.error("❌ Erro MySQL:", err);
@@ -41,53 +34,37 @@ if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
 
       if (results.length === 0) {
         console.warn("⚠️ Usuário não encontrado:", email);
-        return res.sendFile(path.join(__dirname, "../public/index.html"));
+        return res.redirect("/auth/login");
       }
 
       const user = results[0];
 
-      if (!password || !user.password) {
-        console.warn("⚠️ Falha de login: senha ou hash ausente");
-        return res.sendFile(path.join(__dirname, "../public/index.html"));
+      const senhaCorreta = await bcrypt.compare(password, user.password || "");
+      if (!senhaCorreta) {
+        console.warn("⚠️ Senha incorreta para:", email);
+        return res.redirect("/auth/login");
       }
 
-      try {
-        const senhaCorreta = await bcrypt.compare(password, user.password);
-        if (!senhaCorreta) {
-          console.warn("⚠️ Senha incorreta para:", email);
-          return res.sendFile(path.join(__dirname, "../public/index.html"));
-        }
+      req.session.user = {
+        id: user.id,
+        name: user.nome,
+        email: user.email,
+        isAdmin: false,
+      };
 
-        req.session.user = {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          isAdmin: false,
-        };
-
-        console.log("✅ Login usuário:", user.email);
-        res.redirect("/dashboard");
-      } catch (err) {
-        console.error("❌ Erro no bcrypt.compare:", err);
-        res.status(500).send("Erro interno no login");
-      }
+      req.session.save(() => {
+        console.log("✅ Usuário logado:", user.email);
+        res.redirect("/client/home");
+      });
     });
   });
 
-  // --- GET /logout ---
+  // --- Logout ---
   router.get("/logout", (req, res) => {
-    req.session.destroy(err => {
-      if (err) {
-        console.error("❌ Erro ao fazer logout:", err);
-        return res.status(500).send("Erro ao encerrar a sessão");
-      }
-      res.clearCookie("connect.sid");
-      console.log("👋 Logout realizado com sucesso");
-      res.redirect("/"); // volta para login
+    req.session.destroy(() => {
+      res.redirect("/auth/login");
     });
   });
 
   return router;
 };
-
-
